@@ -1,0 +1,36 @@
+.osnContaner{
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    background-image: url('../img/container_bg.png');
+
+}
+.menu{
+    height: 30px;
+    width: 100%;
+    background-color: #616161;
+}
+.showAdwanced{
+    text-align: center;
+    color: white;
+}
+.groupCardPoc{
+    display: flex;
+   flex-wrap: wrap;
+}
+.cardPok{
+    width: 18%;
+    height: 100%;
+    margin-left: 5%;
+}
+.img{
+    width: 100%;
+    height: 75%;
+}
+.typePok{
+    display: flex;
+}
+.type{
+    margin-right: 6%;
+    background-color: aquamarine;
+}
