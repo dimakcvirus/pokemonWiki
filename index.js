@@ -1,76 +1,77 @@
 const app = document.querySelector('.app');
 
 const base = [
-  { 
-    namePokemon: 'Bulbasaur', 
-    idPocemon: '#0001', 
-    imgPocemon: '../img/Bulbasaur.png',
-    type:{typeOne: 'Grass',typetwo:'Poision'}
-  },
-  { 
-    namePokemon: 'Ivysaur',
-    idPocemon: '#0002',
-    imgPocemon: '../img/Ivysaur.png',
-    type:{typeOne: 'Grass',typetwo:'Poision'}
-  },
-  { 
-    namePokemon: 'Venusaur',
-    idPocemon: '#0003',
-    imgPocemon: '../img/Venusaur.png',
-    type:{typeOne: 'Grass',typetwo:'Poision'}
-  },
-  { 
-    namePokemon: 'Charmander',
-    idPocemon: '#0004',
-    imgPocemon: '../img/Charmander.png',
-    type:{typeOne: 'Fire'}
-  },
-  { 
-    namePokemon: 'Charmeleon',
-    idPocemon: '#0005',
-    imgPocemon: '../img/Charmeleon.png',
-    type:{typeOne: 'Fire'}
-  },
-  { 
-    namePokemon: 'Charizard',
-    idPocemon: '#0006',
-    imgPocemon: '../img/Charizard.png',
-    type:{typeOne: 'Fire',typetwo:'Flying'}
-  },
-  { 
-    namePokemon: 'Squirtle',
-    idPocemon: '#0007',
-    imgPocemon: '../img/Squirtle.png',
-    type:{typeOne: 'Wather'}
+  {
+    namePokemon: 'Bulbasaur',
+    idPokemon: '#0001',
+    imgPokemon: './img/Bulbasaur.png',
+    type: { typeOne: 'Grass', typetwo: 'Poision' }
   },
   {
-    namePokemon: 'Wartortle', idPocemon: '#0008',
-    imgPocemon: '../img/Wartortle.png',
-    type:{typeOne: 'Wather'}
+    namePokemon: 'Ivysaur',
+    idPokemon: '#0002',
+    imgPokemon: './img/Ivysaur.png',
+    type: { typeOne: 'Grass', typetwo: 'Poision' }
+  },
+  {
+    namePokemon: 'Venusaur',
+    idPokemon: '#0003',
+    imgPokemon: './img/Venusaur.png',
+    type: { typeOne: 'Grass', typetwo: 'Poision' }
+  },
+  {
+    namePokemon: 'Charmander',
+    idPokemon: '#0004',
+    imgPokemon: './img/Charmander.png',
+    type: { typeOne: 'Fire' }
+  },
+  {
+    namePokemon: 'Charmeleon',
+    idPokemon: '#0005',
+    imgPokemon: './img/Charmeleon.png',
+    type: { typeOne: 'Fire' }
+  },
+  {
+    namePokemon: 'Charizard',
+    idPokemon: '#0006',
+    imgPokemon: './img/Charizard.png',
+    type: { typeOne: 'Fire', typetwo: 'Flying' }
+  },
+  {
+    namePokemon: 'Squirtle',
+    idPokemon: '#0007',
+    imgPokemon: './img/Squirtle.png',
+    type: { typeOne: 'Wather' }
+  },
+  {
+    namePokemon: 'Wartortle',
+    idPokemon: '#0008',
+    imgPokemon: './img/Wartortle.png',
+    type: { typeOne: 'Wather' }
   },
   {
     namePokemon: 'Blastoise',
-    idPocemon: '#0009',
-    imgPocemon: '../img/Blastoise.png',
-    type:{typeOne: 'Wather'}
+    idPokemon: '#0009',
+    imgPokemon: './img/Blastoise.png',
+    type: { typeOne: 'Wather' }
   },
   {
     namePokemon: 'Caterpie',
-    idPocemon: '#0010',
-    imgPocemon: '../img/Caterpie.png',
-    type:{typeOne: 'Bug'}
+    idPokemon: '#0010',
+    imgPokemon: './img/Caterpie.png',
+    type: { typeOne: 'Bug' }
   },
   {
     namePokemon: 'Metapod',
-    idPocemon: '#0011',
-    imgPocemon: '../img/Metapod.png',
-    type:{typeOne: 'Bug'}
+    idPokemon: '#0011',
+    imgPokemon: './img/Metapod.png',
+    type: { typeOne: 'Bug' }
   },
   {
     namePokemon: 'Butterfree',
-    idPocemon: '#0012',
-    imgPocemon: '../img/Butterfree.png',
-    type:{typeOne: 'Bug',typeOne:'Flying'}
+    idPokemon: '#0012',
+    imgPokemon: './img/Butterfree.png',
+    type: { typeOne: 'Bug', typeOne: 'Flying' }
   },
 ];
 
@@ -97,54 +98,48 @@ function Creatcontainer() {
 
 function outputArray() {
   for (let index = 0; index < base.length; index++) {
-    const basePoc = base[index];
-    
-    pocemonShow(basePoc, mainContainer);
+    const basePok = base[index];
+
+    pokemonShow(basePok, mainContainer);
   }
 }
 
 const mainContainer = Creatcontainer();
 outputArray();
 
-function pocemonShow(basePoc, groupCardPoc) {
-
+function pokemonShow(basePok, groupCardPoc) {
   const cardPok = document.createElement('div');
   cardPok.className = 'cardPok';
   groupCardPoc.appendChild(cardPok);
 
   const img = document.createElement('img');
   img.className = 'img';
-  img.src = basePoc.imgPocemon;
-  cardPok.appendChild(img);
+  img.src = basePok.imgPokemon;
 
   const textIdPoc = document.createElement('p');
   textIdPoc.className = 'textIdPoc';
-  textIdPoc.textContent = basePoc.idPocemon;
-  cardPok.appendChild(textIdPoc);
+  textIdPoc.textContent = basePok.idPokemon;
 
   const namePokemon = document.createElement('h2');
   namePokemon.className = 'namePokemon';
-  namePokemon.textContent = basePoc.namePokemon;
-  cardPok.appendChild(namePokemon);
+  namePokemon.textContent = basePok.namePokemon;
 
   const typePok = document.createElement('div');
   typePok.className = 'typePok';
-  cardPok.appendChild(typePok);
-   
-  renderCreatwsTypePocemon(basePoc,typePok);
+  cardPok.append(img, textIdPoc, namePokemon, typePok);
 
+  renderCreatwsTypePokemon(basePok, typePok);
 }
 
-function renderCreatwsTypePocemon(basePoc, typePok){
-  //type:{typeOne:'Grass',typetwo:'Poision'}
- if(basePoc.type){
-  for(key in basePoc.type){
-    const type = document.createElement('p');
-    type.className = basePoc.type[key].toLowerCase();
-    type.textContent = basePoc.type[key];
-    typePok.appendChild(type);
+function renderCreatwsTypePokemon(basePok, typePok) {
+  if (basePok.type) {
+    for (key in basePok.type) {
+      const type = document.createElement('p');
+      type.className = basePok.type[key].toLowerCase();
+      type.textContent = basePok.type[key];
+      typePok.appendChild(type);
+    }
   }
- }
 }
 
 
