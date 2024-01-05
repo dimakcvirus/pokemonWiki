@@ -5,19 +5,19 @@ const base = [
     namePokemon: "Bulbasaur",
     idPokemon: "#0001",
     imgPokemon: "./img/Bulbasaur.png",
-    type: { typeOne: "Grass", typeTwo: "Poision" },
+    type: { typeOne: "Grass", typetwo: "Poision" },
   },
   {
     namePokemon: "Ivysaur",
     idPokemon: "#0002",
     imgPokemon: "./img/Ivysaur.png",
-    type: { typeOne: "Grass", typeTwo: "Poision" },
+    type: { typeOne: "Grass", typetwo: "Poision" },
   },
   {
     namePokemon: "Venusaur",
     idPokemon: "#0003",
     imgPokemon: "./img/Venusaur.png",
-    type: { typeOne: "Grass", typeTwo: "Poision" },
+    type: { typeOne: "Grass", typetwo: "Poision" },
   },
   {
     namePokemon: "Charmander",
@@ -35,7 +35,7 @@ const base = [
     namePokemon: "Charizard",
     idPokemon: "#0006",
     imgPokemon: "./img/Charizard.png",
-    type: { typeOne: "Fire", typeTwo: "Flying" },
+    type: { typeOne: "Fire", typetwo: "Flying" },
   },
   {
     namePokemon: "Squirtle",
@@ -77,7 +77,13 @@ const base = [
     namePokemon: "",
     idPokemon: "",
     imgPokemon: "",
-    type: { typeOne: "Bug", typeTwo: "Flying" },
+    type: { typeOne: "Bug", typetwo: "Flying" },
+  },
+  {
+    namePokemon: "",
+    idPokemon: "",
+    imgPokemon: "",
+    type: { typeOne: "Bug", typetwo: "Flying" },
   },
   {
     namePokemon: "",
