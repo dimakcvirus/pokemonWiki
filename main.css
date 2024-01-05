@@ -2,7 +2,7 @@
   width: 800px;
   margin-left: auto;
   margin-right: auto;
-  background-image: url('../img/container_bg.png');
+  background-image: url("../img/container_bg.png");
 }
 
 .menu {
@@ -11,6 +11,12 @@
   background-color: #616161;
 }
 
+.namePokemon {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60%;
+}
 .showAdwanced {
   text-align: center;
   color: white;
@@ -84,4 +90,5 @@
   border-radius: 3px;
   width: 39%;
   text-align: center;
+  margin-right: 5%;
 }
