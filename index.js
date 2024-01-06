@@ -1,4 +1,4 @@
-let app = document.getElementById('app');
+let app = document.getElementById("app");
 
 const base = [
   {
@@ -83,23 +83,29 @@ const base = [
     namePokemon: "",
     idPokemon: "",
     imgPokemon: "",
-    type: { typeOne: "Bug", typetwo: "Flying" },
+    type: { typeOne: "Bug", typetwo: "Rock" },
+  },
+  {
+    namePokemon: "",
+    idPokemon: "",
+    imgPokemon: "",
+    type: { typeOne: "Bug", typetwo: "Rock" },
   },
 ];
 
 let innerPokemonData = null;
 
 // обработчик нажатий на ссылки
-let linksHandler = event =>  {
+let linksHandler = (event) => {
   // получаем запрошенный url
   let url = new URL(event.currentTarget.href);
-  
+
   // запускаем роутер, предавая ему path
   Router.dispatch(url.pathname);
-  
+
   // запрещаем дальнейший переход по ссылке
   event.preventDefault();
-}
+};
 
 function Creatcontainer() {
   const mainContainer = document.createElement("div");
@@ -136,9 +142,9 @@ outputArray();
 function pokemonShow(basePok, groupCardPoc) {
   blankDatabaseDataStub(basePok);
   const cardPok = document.createElement("a");
-  cardPok.href = `/pokemons/${basePok.idPokemon.replace('#', '')}`;
-  cardPok.style.textDecoration = 'none';
-  cardPok.style.color = '#000';
+  cardPok.href = `/pokemons/${basePok.idPokemon.replace("#", "")}`;
+  cardPok.style.textDecoration = "none";
+  cardPok.style.color = "#000";
   cardPok.className = "cardPok";
   groupCardPoc.appendChild(cardPok);
 
@@ -167,8 +173,9 @@ function pokemonShow(basePok, groupCardPoc) {
 function renderCreatwsTypePokemon(basePok, typePok) {
   if (basePok.type) {
     for (key in basePok.type) {
-      const type = document.createElement("p");
-      type.className = basePok.type[key].toLowerCase();
+      const type = document.createElement("span");
+      type.classList.add(basePok.type[key].toLowerCase());
+      type.classList.add("pokemonType");
       type.textContent = basePok.type[key];
       typePok.appendChild(type);
     }
@@ -179,30 +186,32 @@ const ShowMainPage = () => {
   // console.log('ShowMainPage');
 
   const mainContainer = document.querySelector(".mainContainer");
-  let innerPokemonContainer = document.getElementById('inner-pokemon-container');
+  let innerPokemonContainer = document.getElementById(
+    "inner-pokemon-container"
+  );
   // удаляем из ДОМ-дерева контент внутреннего покемона
   innerPokemonContainer.remove();
   // очищаем innerPokemonData
   innerPokemonData = null;
 
   // возвращаем видимость скрытого блока
-  mainContainer.style.display = 'block';
-}
+  mainContainer.style.display = "block";
+};
 
 const RenderPokemonPage = async ({ id }) => {
   // console.log('RenderPokemonPage', id);
 
   // если хэша нет - добавляем его в историю
-  if (!window.location.href.match('#')) {
+  if (!window.location.href.match("#")) {
     history.pushState({}, null, window.location.href + `#pokemonId=${id}`);
   }
 
   if (base.length) {
-    innerPokemonData = base.find(item => item.idPokemon === '#' + id)
+    innerPokemonData = base.find((item) => item.idPokemon === "#" + id);
   }
 
-  let innerPokemonContainer = document.createElement('div');
-  innerPokemonContainer.id = 'inner-pokemon-container';
+  let innerPokemonContainer = document.createElement("div");
+  innerPokemonContainer.id = "inner-pokemon-container";
 
   const img = document.createElement("img");
   img.src = innerPokemonData.imgPokemon;
@@ -222,15 +231,14 @@ const RenderPokemonPage = async ({ id }) => {
   innerPokemonContainer.append(img, textIdPoc, namePokemon, typePok);
 
   let theFirstChild = app.firstElementChild;
-  theFirstChild.style.display = 'none';
+  theFirstChild.style.display = "none";
 
   app.insertBefore(innerPokemonContainer, theFirstChild);
-}
+};
 
 function blankDatabaseDataStub(basePok) {
   if (basePok.imgPokemon === "") {
     basePok.imgPokemon = "./img/pika.jpg";
-    // console.log("test");
   }
   if (basePok.namePokemon === "") {
     basePok.namePokemon = "dimakc";
