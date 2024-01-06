@@ -1,4 +1,4 @@
-const app = document.querySelector(".app");
+let app = document.getElementById('app');
 
 const base = [
   {
@@ -87,6 +87,20 @@ const base = [
   },
 ];
 
+let innerPokemonData = null;
+
+// обработчик нажатий на ссылки
+let linksHandler = event =>  {
+  // получаем запрошенный url
+  let url = new URL(event.currentTarget.href);
+  
+  // запускаем роутер, предавая ему path
+  Router.dispatch(url.pathname);
+  
+  // запрещаем дальнейший переход по ссылке
+  event.preventDefault();
+}
+
 function Creatcontainer() {
   const mainContainer = document.createElement("div");
   mainContainer.className = "mainContainer";
@@ -121,7 +135,10 @@ outputArray();
 
 function pokemonShow(basePok, groupCardPoc) {
   blankDatabaseDataStub(basePok);
-  const cardPok = document.createElement("div");
+  const cardPok = document.createElement("a");
+  cardPok.href = `/pokemons/${basePok.idPokemon.replace('#', '')}`;
+  cardPok.style.textDecoration = 'none';
+  cardPok.style.color = '#000';
   cardPok.className = "cardPok";
   groupCardPoc.appendChild(cardPok);
 
@@ -142,6 +159,9 @@ function pokemonShow(basePok, groupCardPoc) {
   cardPok.append(img, textIdPoc, namePokemon, typePok);
 
   renderCreatwsTypePokemon(basePok, typePok);
+
+  // вешаем на событие onclick обработчик
+  cardPok.onclick = linksHandler;
 }
 
 function renderCreatwsTypePokemon(basePok, typePok) {
@@ -155,10 +175,62 @@ function renderCreatwsTypePokemon(basePok, typePok) {
   }
 }
 
+const ShowMainPage = () => {
+  // console.log('ShowMainPage');
+
+  const mainContainer = document.querySelector(".mainContainer");
+  let innerPokemonContainer = document.getElementById('inner-pokemon-container');
+  // удаляем из ДОМ-дерева контент внутреннего покемона
+  innerPokemonContainer.remove();
+  // очищаем innerPokemonData
+  innerPokemonData = null;
+
+  // возвращаем видимость скрытого блока
+  mainContainer.style.display = 'block';
+}
+
+const RenderPokemonPage = async ({ id }) => {
+  // console.log('RenderPokemonPage', id);
+
+  // если хэша нет - добавляем его в историю
+  if (!window.location.href.match('#')) {
+    history.pushState({}, null, window.location.href + `#pokemonId=${id}`);
+  }
+
+  if (base.length) {
+    innerPokemonData = base.find(item => item.idPokemon === '#' + id)
+  }
+
+  let innerPokemonContainer = document.createElement('div');
+  innerPokemonContainer.id = 'inner-pokemon-container';
+
+  const img = document.createElement("img");
+  img.src = innerPokemonData.imgPokemon;
+
+  const textIdPoc = document.createElement("p");
+  textIdPoc.className = "textIdPoc";
+  textIdPoc.textContent = innerPokemonData.idPokemon;
+
+  const namePokemon = document.createElement("h2");
+  namePokemon.className = "namePokemon";
+  namePokemon.textContent = innerPokemonData.namePokemon;
+
+  const typePok = document.createElement("div");
+  typePok.className = "typePok";
+
+  renderCreatwsTypePokemon(innerPokemonData, typePok);
+  innerPokemonContainer.append(img, textIdPoc, namePokemon, typePok);
+
+  let theFirstChild = app.firstElementChild;
+  theFirstChild.style.display = 'none';
+
+  app.insertBefore(innerPokemonContainer, theFirstChild);
+}
+
 function blankDatabaseDataStub(basePok) {
   if (basePok.imgPokemon === "") {
     basePok.imgPokemon = "./img/pika.jpg";
-    console.log("test");
+    // console.log("test");
   }
   if (basePok.namePokemon === "") {
     basePok.namePokemon = "dimakc";
