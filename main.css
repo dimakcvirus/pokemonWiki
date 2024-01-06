@@ -1,8 +1,11 @@
+#app {
+  background-image: url("../img/container_bg.png");
+}
 .mainContainer {
   width: 1000px;
   margin-left: auto;
   margin-right: auto;
-  background-image: url("../img/container_bg.png");
+  background-color: white;
 }
 
 .menu {
@@ -39,6 +42,7 @@
 .img {
   width: 205px;
   height: 205px;
+  background-color: #f2f2f2;
 }
 
 .typePok {
