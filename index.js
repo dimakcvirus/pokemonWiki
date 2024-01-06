@@ -83,7 +83,13 @@ const base = [
     namePokemon: "",
     idPokemon: "",
     imgPokemon: "",
-    type: { typeOne: "Bug", typetwo: "Flying" },
+    type: { typeOne: "Bug", typetwo: "Rock" },
+  },
+  {
+    namePokemon: "",
+    idPokemon: "",
+    imgPokemon: "",
+    type: { typeOne: "Bug", typetwo: "Rock" },
   },
 ];
 
@@ -147,8 +153,9 @@ function pokemonShow(basePok, groupCardPoc) {
 function renderCreatwsTypePokemon(basePok, typePok) {
   if (basePok.type) {
     for (key in basePok.type) {
-      const type = document.createElement("p");
-      type.className = basePok.type[key].toLowerCase();
+      const type = document.createElement("span");
+      type.classList.add(basePok.type[key].toLowerCase());
+      type.classList.add("pokemonType");
       type.textContent = basePok.type[key];
       typePok.appendChild(type);
     }
@@ -158,7 +165,6 @@ function renderCreatwsTypePokemon(basePok, typePok) {
 function blankDatabaseDataStub(basePok) {
   if (basePok.imgPokemon === "") {
     basePok.imgPokemon = "./img/pika.jpg";
-    console.log("test");
   }
   if (basePok.namePokemon === "") {
     basePok.namePokemon = "dimakc";
