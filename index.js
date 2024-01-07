@@ -83,12 +83,6 @@ const base = [
     namePokemon: "",
     idPokemon: "",
     imgPokemon: "",
-    type: { typeOne: "Bug", typetwo: "Rock" },
-  },
-  {
-    namePokemon: "",
-    idPokemon: "",
-    imgPokemon: "",
     type: {
       typeOne: "Bug",
       typetwo: "Dark",
@@ -110,36 +104,6 @@ const base = [
       typetwo18: "Water",
     },
   },
-  {
-    namePokemon: "",
-    idPokemon: "",
-    imgPokemon: "",
-    type: { typeOne: "Bug", typetwo: "Rock" },
-  },
-  {
-    namePokemon: "",
-    idPokemon: "",
-    imgPokemon: "",
-    type: { typeOne: "Bug", typetwo: "Rock" },
-  },
-  {
-    namePokemon: "",
-    idPokemon: "",
-    imgPokemon: "",
-    type: { typeOne: "Bug", typetwo: "Rock" },
-  },
-  {
-    namePokemon: "",
-    idPokemon: "",
-    imgPokemon: "",
-    type: { typeOne: "Bug", typetwo: "Rock" },
-  },
-  {
-    namePokemon: "",
-    idPokemon: "",
-    imgPokemon: "",
-    type: { typeOne: "Bug", typetwo: "Rock" },
-  },
 ];
 
 let innerPokemonData = null;
@@ -160,15 +124,6 @@ function Creatcontainer() {
   const mainContainer = document.createElement("div");
   mainContainer.className = "mainContainer";
   app.appendChild(mainContainer);
-
-  // const menu = document.createElement("div");
-  // menu.className = "menu";
-  // mainContainer.appendChild(menu);
-
-  // const showAdwanced = document.createElement("p");
-  // showAdwanced.className = "showAdwanced";
-  // showAdwanced.textContent = "Show Advanced Search";
-  // menu.appendChild(showAdwanced);
 
   const groupCardPoc = document.createElement("div");
   groupCardPoc.className = "groupCardPoc";
@@ -205,7 +160,7 @@ function pokemonShow(basePok, groupCardPoc) {
   const informElements = document.createElement("div");
   cardPok.appendChild(informElements);
   informElements.className = "informElements";
-  const textIdPoc = document.createElement("p");
+  const textIdPoc = document.createElement("div");
   textIdPoc.className = "textIdPoc";
   textIdPoc.textContent = basePok.idPokemon;
 
