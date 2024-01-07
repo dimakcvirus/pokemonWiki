@@ -244,8 +244,6 @@ function renderCreatwsTypePokemon(basePok, typePok) {
 }
 
 const ShowMainPage = () => {
-  // console.log('ShowMainPage');
-
   const mainContainer = document.querySelector(".mainContainer");
   let innerPokemonContainer = document.getElementById(
     "inner-pokemon-container"
