@@ -1,5 +1,5 @@
 #app {
-  background-image: url("../img/container_bg.png");
+  background-image: url("./img/container_bg.png");
 }
 .mainContainer {
   width: 1000px;

@@ -5,19 +5,19 @@ const base = [
     namePokemon: "Bulbasaur",
     idPokemon: "#0001",
     imgPokemon: "./img/Bulbasaur.png",
-    type: { typeOne: "Grass", typetwo: "Poision" },
+    type: { typeOne: "Grass", typetwo: "Poison" },
   },
   {
     namePokemon: "Ivysaur",
     idPokemon: "#0002",
     imgPokemon: "./img/Ivysaur.png",
-    type: { typeOne: "Grass", typetwo: "Poision" },
+    type: { typeOne: "Grass", typetwo: "Poison" },
   },
   {
     namePokemon: "Venusaur",
     idPokemon: "#0003",
     imgPokemon: "./img/Venusaur.png",
-    type: { typeOne: "Grass", typetwo: "Poision" },
+    type: { typeOne: "Grass", typetwo: "Poison" },
   },
   {
     namePokemon: "Charmander",
