@@ -145,17 +145,19 @@ outputArray();
 
 function pokemonShow(basePok, groupCardPoc) {
   blankDatabaseDataStub(basePok);
-  const cardPok = document.createElement("a");
-  cardPok.href = `/pokemons/${basePok.idPokemon.replace("#", "")}`;
+  const cardPok = document.createElement("div");
   cardPok.style.textDecoration = "none";
   cardPok.style.color = "#000";
   cardPok.className = "cardPok";
   groupCardPoc.appendChild(cardPok);
-
+  
+  const linkWrapper = document.createElement("a");
+  linkWrapper.href = `/pokemons/${basePok.idPokemon.replace("#", "")}`;
   const img = document.createElement("img");
   img.className = "img";
   img.src = basePok.imgPokemon;
-  cardPok.appendChild(img);
+  linkWrapper.append(img);
+  cardPok.appendChild(linkWrapper);
 
   const informElements = document.createElement("div");
   cardPok.appendChild(informElements);
@@ -175,7 +177,7 @@ function pokemonShow(basePok, groupCardPoc) {
   renderCreatwsTypePokemon(basePok, typePok);
 
   // вешаем на событие onclick обработчик
-  cardPok.onclick = linksHandler;
+  linkWrapper.onclick = linksHandler;
 }
 
 function renderCreatwsTypePokemon(basePok, typePok) {
