@@ -83,12 +83,6 @@ const base = [
     namePokemon: "",
     idPokemon: "",
     imgPokemon: "",
-    type: { typeOne: "Bug", typetwo: "Rock" },
-  },
-  {
-    namePokemon: "",
-    idPokemon: "",
-    imgPokemon: "",
     type: {
       typeOne: "Bug",
       typetwo: "Dark",
@@ -131,15 +125,6 @@ function Creatcontainer() {
   mainContainer.className = "mainContainer";
   app.appendChild(mainContainer);
 
-  const menu = document.createElement("div");
-  menu.className = "menu";
-  mainContainer.appendChild(menu);
-
-  const showAdwanced = document.createElement("p");
-  showAdwanced.className = "showAdwanced";
-  showAdwanced.textContent = "Show Advanced Search";
-  menu.appendChild(showAdwanced);
-
   const groupCardPoc = document.createElement("div");
   groupCardPoc.className = "groupCardPoc";
   mainContainer.appendChild(groupCardPoc);
@@ -170,8 +155,12 @@ function pokemonShow(basePok, groupCardPoc) {
   const img = document.createElement("img");
   img.className = "img";
   img.src = basePok.imgPokemon;
+  cardPok.appendChild(img);
 
-  const textIdPoc = document.createElement("p");
+  const informElements = document.createElement("div");
+  cardPok.appendChild(informElements);
+  informElements.className = "informElements";
+  const textIdPoc = document.createElement("div");
   textIdPoc.className = "textIdPoc";
   textIdPoc.textContent = basePok.idPokemon;
 
@@ -181,7 +170,7 @@ function pokemonShow(basePok, groupCardPoc) {
 
   const typePok = document.createElement("div");
   typePok.className = "typePok";
-  cardPok.append(img, textIdPoc, namePokemon, typePok);
+  informElements.append(textIdPoc, namePokemon, typePok);
 
   renderCreatwsTypePokemon(basePok, typePok);
 
@@ -191,19 +180,25 @@ function pokemonShow(basePok, groupCardPoc) {
 
 function renderCreatwsTypePokemon(basePok, typePok) {
   if (basePok.type) {
-    for (key in basePok.type) {
+    const maxTypesToShow = 4;
+    let typesShown = 0;
+    for (let key in basePok.type) {
+      if (typesShown >= maxTypesToShow) {
+        break;
+      }
+
       const type = document.createElement("span");
       type.classList.add(basePok.type[key].toLowerCase());
       type.classList.add("pokemonType");
       type.textContent = basePok.type[key];
       typePok.appendChild(type);
+
+      typesShown++;
     }
   }
 }
 
 const ShowMainPage = () => {
-  // console.log('ShowMainPage');
-
   const mainContainer = document.querySelector(".mainContainer");
   let innerPokemonContainer = document.getElementById(
     "inner-pokemon-container"
