@@ -1,112 +1,39 @@
+const BASE_URL = 'https://pokeapi.co/api/v2/';
+const LIMIT_POKEMNON = 12;
+
 let app = document.getElementById("app");
-
-const base = [
-  {
-    namePokemon: "Bulbasaur",
-    idPokemon: "#0001",
-    imgPokemon: "./img/Bulbasaur.png",
-    type: { typeOne: "Grass", typetwo: "Poison" },
-  },
-  {
-    namePokemon: "Ivysaur",
-    idPokemon: "#0002",
-    imgPokemon: "./img/Ivysaur.png",
-    type: { typeOne: "Grass", typetwo: "Poison" },
-  },
-  {
-    namePokemon: "Venusaur",
-    idPokemon: "#0003",
-    imgPokemon: "./img/Venusaur.png",
-    type: { typeOne: "Grass", typetwo: "Poison" },
-  },
-  {
-    namePokemon: "Charmander",
-    idPokemon: "#0004",
-    imgPokemon: "./img/Charmander.png",
-    type: { typeOne: "Fire" },
-  },
-  {
-    namePokemon: "Charmeleon",
-    idPokemon: "#0005",
-    imgPokemon: "./img/Charmeleon.png",
-    type: { typeOne: "Fire" },
-  },
-  {
-    namePokemon: "Charizard",
-    idPokemon: "#0006",
-    imgPokemon: "./img/Charizard.png",
-    type: { typeOne: "Fire", typetwo: "Flying" },
-  },
-  {
-    namePokemon: "Squirtle",
-    idPokemon: "#0007",
-    imgPokemon: "./img/Squirtle.png",
-    type: { typeOne: "Water" },
-  },
-  {
-    namePokemon: "Wartortle",
-    idPokemon: "#0008",
-    imgPokemon: "./img/Wartortle.png",
-    type: { typeOne: "Water" },
-  },
-  {
-    namePokemon: "Blastoise",
-    idPokemon: "#0009",
-    imgPokemon: "./img/Blastoise.png",
-    type: { typeOne: "Water" },
-  },
-  {
-    namePokemon: "Caterpie",
-    idPokemon: "#0010",
-    imgPokemon: "./img/Caterpie.png",
-    type: { typeOne: "Bug" },
-  },
-  {
-    namePokemon: "Metapod",
-    idPokemon: "#0011",
-    imgPokemon: "./img/Metapod.png",
-    type: { typeOne: "Bug" },
-  },
-  {
-    namePokemon: "Butterfree",
-    idPokemon: "#0012",
-    imgPokemon: "./img/Butterfree.png",
-    type: { typeOne: "Bug", tupeTwo: "Flying" },
-  },
-  {
-    namePokemon: "",
-    idPokemon: "",
-    imgPokemon: "",
-    type: { typeOne: "Bug", typetwo: "Flying" },
-  },
-  {
-    namePokemon: "",
-    idPokemon: "",
-    imgPokemon: "",
-    type: {
-      typeOne: "Bug",
-      typetwo: "Dark",
-      typetwo3: "Dragon",
-      typetwo4: "Electric",
-      typetwo5: "Fairy",
-      typetwo6: "Fighting",
-      typetwo7: "Fire",
-      typetwo8: "Flying",
-      typetwo9: "Ghost",
-      typetwo10: "Grass",
-      typetwo11: "Ground",
-      typetwo12: "Ice",
-      typetwo13: "Normal",
-      typetwo14: "Poison",
-      typetwo15: "Psychic",
-      typetwo16: "Rock",
-      typetwo17: "Steel",
-      typetwo18: "Water",
-    },
-  },
-];
-
+let offsetPok = 0
+const base = [];
 let innerPokemonData = null;
+
+const mainContainer = Creatcontainer();
+
+async function getPokemons() {
+  const response = await fetch(`${BASE_URL}pokemon/?limit=${LIMIT_POKEMNON}&offset=${offsetPok}`);
+  const data =  await response.json(); // парсим промис
+  const parametersPokemons = data.results; // задаю ссылку для мапа 
+  // получаю все урлы и передаю в новую функцию
+
+  await Promise.allSettled(parametersPokemons.map(async (parametrPokemon) => {
+    const pokemonData = await getPokemon(parametrPokemon.url);
+    base.push(pokemonData)
+  }));
+
+  base.sort((a, b) => {
+    return a.id - b.id
+  });
+
+  outputArray(base); //отрисовка вызовется только тогда, когда выполнется allSettled
+}
+
+getPokemons()
+
+const getPokemon = async (pokemonUrl) => {
+  const response = await fetch(pokemonUrl); // отправляю все урлы
+  const pokemonData = await response.json(); // парсим урлы
+
+  return pokemonData
+}
 
 // обработчик нажатий на ссылки
 let linksHandler = (event) => {
@@ -129,70 +56,90 @@ function Creatcontainer() {
   groupCardPoc.className = "groupCardPoc";
   mainContainer.appendChild(groupCardPoc);
 
+  const buttonNewPok = document.createElement('button');
+  buttonNewPok.className = 'buttonNewPok';
+  buttonNewPok.innerHTML = 'Load more Pokemon'
+  mainContainer.appendChild(buttonNewPok);
+
   return groupCardPoc;
 }
 
-function outputArray() {
+function outputArray(base) {
   for (let index = 0; index < base.length; index++) {
     const basePok = base[index];
-
     pokemonShow(basePok, mainContainer);
     blankDatabaseDataStub(basePok);
+    getId(basePok);
   }
 }
-const mainContainer = Creatcontainer();
-outputArray();
+
+const getId = (basePok) => {
+  const pokemonId = basePok.id
+  let stringPokemonId = pokemonId.toString()
+
+  switch (stringPokemonId.length) {
+    case 1:
+      return `#000${pokemonId}`;
+    case 2:
+      return `#00${pokemonId}`;
+    case 3:
+      return `#0${pokemonId}`;
+    case 4:
+      return `#${pokemonId}`;
+    default:
+      return `#000${pokemonId}`;
+  }
+};
 
 function pokemonShow(basePok, groupCardPoc) {
   blankDatabaseDataStub(basePok);
-  const cardPok = document.createElement("div");
+  const cardPok = document.createElement("a");
+  cardPok.href = `/pokemons/${basePok.id}`;
   cardPok.style.textDecoration = "none";
   cardPok.style.color = "#000";
   cardPok.className = "cardPok";
   groupCardPoc.appendChild(cardPok);
-  
-  const linkWrapper = document.createElement("a");
-  linkWrapper.href = `/pokemons/${basePok.idPokemon.replace("#", "")}`;
+
   const img = document.createElement("img");
   img.className = "img";
-  img.src = basePok.imgPokemon;
-  linkWrapper.append(img);
-  cardPok.appendChild(linkWrapper);
+  img.src = basePok.sprites.other['official-artwork'].front_default;
+  cardPok.appendChild(img);
 
   const informElements = document.createElement("div");
   cardPok.appendChild(informElements);
   informElements.className = "informElements";
-  const textIdPoc = document.createElement("div");
-  textIdPoc.className = "textIdPoc";
-  textIdPoc.textContent = basePok.idPokemon;
+  const textIdPok = document.createElement("div");
+  textIdPok.className = "textIdPok";
+  textIdPok.textContent = getId(basePok);
 
   const namePokemon = document.createElement("h2");
   namePokemon.className = "namePokemon";
-  namePokemon.textContent = basePok.namePokemon;
+  namePokemon.textContent = basePok.name;
 
   const typePok = document.createElement("div");
   typePok.className = "typePok";
-  informElements.append(textIdPoc, namePokemon, typePok);
+  informElements.append(textIdPok, namePokemon, typePok);
 
   renderCreatwsTypePokemon(basePok, typePok);
 
   // вешаем на событие onclick обработчик
-  linkWrapper.onclick = linksHandler;
+  cardPok.onclick = linksHandler;
 }
 
 function renderCreatwsTypePokemon(basePok, typePok) {
-  if (basePok.type) {
+  if (basePok.types) {
     const maxTypesToShow = 4;
     let typesShown = 0;
-    for (let key in basePok.type) {
+
+    for (let key in basePok.types) {
       if (typesShown >= maxTypesToShow) {
         break;
       }
 
       const type = document.createElement("span");
-      type.classList.add(basePok.type[key].toLowerCase());
+      type.classList.add(basePok.types[key].type.name.toLowerCase());
       type.classList.add("pokemonType");
-      type.textContent = basePok.type[key];
+      type.textContent = basePok.types[key].type.name;
       typePok.appendChild(type);
 
       typesShown++;
@@ -232,9 +179,9 @@ const RenderPokemonPage = async ({ id }) => {
   const img = document.createElement("img");
   img.src = innerPokemonData.imgPokemon;
 
-  const textIdPoc = document.createElement("p");
-  textIdPoc.className = "textIdPoc";
-  textIdPoc.textContent = innerPokemonData.idPokemon;
+  const textIdPok = document.createElement("p");
+  textIdPok.className = "textIdPok";
+  textIdPok.textContent = innerPokemonData.idPokemon;
 
   const namePokemon = document.createElement("h2");
   namePokemon.className = "namePokemon";
@@ -244,7 +191,7 @@ const RenderPokemonPage = async ({ id }) => {
   typePok.className = "typePok";
 
   renderCreatwsTypePokemon(innerPokemonData, typePok);
-  innerPokemonContainer.append(img, textIdPoc, namePokemon, typePok);
+  innerPokemonContainer.append(img, textIdPok, namePokemon, typePok);
 
   let theFirstChild = app.firstElementChild;
   theFirstChild.style.display = "none";
@@ -263,3 +210,30 @@ function blankDatabaseDataStub(basePok) {
     basePok.idPokemon = "000001";
   }
 }
+
+//фукнция по получению новой пачки покемонов, отрисовываем их и добавляем в base
+const getAdditionalPokemons = async () => {
+  const newPokemons = [];
+  const url = `${BASE_URL}pokemon/?limit=${LIMIT_POKEMNON}&offset=${offsetPok}`;
+  const response = await fetch(url);
+  const data =  await response.json(); // парсим промис
+
+  await Promise.allSettled(data.results.map(async(parametrPokemon) => {
+    const pokemonData = await getPokemon(parametrPokemon.url);
+    newPokemons.push(pokemonData);
+  }))
+
+  newPokemons.sort((a, b) => {
+    return a.id - b.id;
+  });
+
+  base.push(...newPokemons);
+  outputArray(newPokemons);
+}
+
+const button  = document.querySelector('.buttonNewPok')
+
+button.addEventListener('click', () => {
+  offsetPok += 12
+  getAdditionalPokemons()
+});
