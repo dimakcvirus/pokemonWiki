@@ -26,8 +26,6 @@ async function getPokemons() {
   outputArray(base); //отрисовка вызовется только тогда, когда выполнется allSettled
 }
 
-getPokemons()
-
 const getPokemon = async (pokemonUrl) => {
   const response = await fetch(pokemonUrl); // отправляю все урлы
   const pokemonData = await response.json(); // парсим урлы
@@ -61,6 +59,11 @@ function Creatcontainer() {
   buttonNewPok.innerHTML = 'Load more Pokemon'
   mainContainer.appendChild(buttonNewPok);
 
+  buttonNewPok.addEventListener('click', () => {
+    offsetPok += 12
+    getAdditionalPokemons()
+  });
+
   return groupCardPoc;
 }
 
@@ -93,20 +96,19 @@ const getId = (basePok) => {
 
 function pokemonShow(basePok, groupCardPoc) {
   blankDatabaseDataStub(basePok);
-  const cardPok = document.createElement("a");
-  cardPok.href = `/pokemons/${basePok.id}`;
-  cardPok.style.textDecoration = "none";
-  cardPok.style.color = "#000";
+  const cardPok = document.createElement("div");
   cardPok.className = "cardPok";
   groupCardPoc.appendChild(cardPok);
+  
+  const pokeLink = document.createElement("a");
+  pokeLink.href = `/pokemons/${basePok.id}`;
+  pokeLink.style.textDecoration = "none";
 
   const img = document.createElement("img");
   img.className = "img";
   img.src = basePok.sprites.other['official-artwork'].front_default;
-  cardPok.appendChild(img);
 
   const informElements = document.createElement("div");
-  cardPok.appendChild(informElements);
   informElements.className = "informElements";
   const textIdPok = document.createElement("div");
   textIdPok.className = "textIdPok";
@@ -118,12 +120,14 @@ function pokemonShow(basePok, groupCardPoc) {
 
   const typePok = document.createElement("div");
   typePok.className = "typePok";
-  informElements.append(textIdPok, namePokemon, typePok);
-
   renderCreatwsTypePokemon(basePok, typePok);
 
+  pokeLink.append(img);
+  informElements.append(textIdPok, namePokemon, typePok);
+  cardPok.append(pokeLink, informElements);
+
   // вешаем на событие onclick обработчик
-  cardPok.onclick = linksHandler;
+  pokeLink.onclick = linksHandler;
 }
 
 function renderCreatwsTypePokemon(basePok, typePok) {
@@ -149,54 +153,69 @@ function renderCreatwsTypePokemon(basePok, typePok) {
 
 const ShowMainPage = () => {
   const mainContainer = document.querySelector(".mainContainer");
-  let innerPokemonContainer = document.getElementById(
-    "inner-pokemon-container"
-  );
+  let innerPokemonContainer = document.getElementById("inner-pokemon-container");
+  console.log('ShowMainPage', innerPokemonContainer);
+
   // удаляем из ДОМ-дерева контент внутреннего покемона
   innerPokemonContainer.remove();
   // очищаем innerPokemonData
   innerPokemonData = null;
 
   // возвращаем видимость скрытого блока
-  mainContainer.style.display = "block";
+  mainContainer.style.display = "flex";
 };
 
 const RenderPokemonPage = async ({ id }) => {
-  // console.log('RenderPokemonPage', id);
+  console.log('RenderPokemonPage', id);
 
   // если хэша нет - добавляем его в историю
   if (!window.location.href.match("#")) {
     history.pushState({}, null, window.location.href + `#pokemonId=${id}`);
   }
 
-  if (base.length) {
-    innerPokemonData = base.find((item) => item.idPokemon === "#" + id);
-  }
+  let existingContainer = document.getElementById("inner-pokemon-container");
 
+  if (existingContainer) {
+      // удаляем из ДОМ-дерева контент внутреннего покемона чтобы отрисовать новый
+    existingContainer.remove();
+    // очищаем innerPokemonData
+    innerPokemonData = null;
+  }
+  
   let innerPokemonContainer = document.createElement("div");
   innerPokemonContainer.id = "inner-pokemon-container";
 
-  const img = document.createElement("img");
-  img.src = innerPokemonData.imgPokemon;
+  innerPokemonData = base.length && base.find((item) => Number(item.id) === Number(id));
 
-  const textIdPok = document.createElement("p");
+  if (!innerPokemonData) {
+    // если в массиве base нет нужного покемона - получаем его
+    innerPokemonData = await getPokemon(`https://pokeapi.co/api/v2/pokemon/${id}/`);
+  }
+
+  const img = document.createElement("img");
+  img.className = "img";
+  img.src = innerPokemonData.sprites.other['official-artwork'].front_default;
+
+  const informElements = document.createElement("div");
+  informElements.className = "informElements";
+  const textIdPok = document.createElement("div");
   textIdPok.className = "textIdPok";
-  textIdPok.textContent = innerPokemonData.idPokemon;
+  textIdPok.textContent = getId(innerPokemonData);
 
   const namePokemon = document.createElement("h2");
   namePokemon.className = "namePokemon";
-  namePokemon.textContent = innerPokemonData.namePokemon;
+  namePokemon.textContent = innerPokemonData.name;
 
   const typePok = document.createElement("div");
   typePok.className = "typePok";
-
   renderCreatwsTypePokemon(innerPokemonData, typePok);
   innerPokemonContainer.append(img, textIdPok, namePokemon, typePok);
 
-  let theFirstChild = app.firstElementChild;
-  theFirstChild.style.display = "none";
+  // находим "mainContainer" который мы генерируем в методе "Creatcontainer"
+  const mainContainer = document.querySelector(".mainContainer");
+  mainContainer.style.display = "none"; // скрываем его в DOM-дереве
 
-  app.insertBefore(innerPokemonContainer, theFirstChild);
+  app.append(innerPokemonContainer);
 };
 
 function blankDatabaseDataStub(basePok) {
@@ -211,7 +230,7 @@ function blankDatabaseDataStub(basePok) {
   }
 }
 
-//фукнция по получению новой пачки покемонов, отрисовываем их и добавляем в base
+// фукнция по получению новой пачки покемонов, отрисовываем их и добавляем в base
 const getAdditionalPokemons = async () => {
   const newPokemons = [];
   const url = `${BASE_URL}pokemon/?limit=${LIMIT_POKEMNON}&offset=${offsetPok}`;
@@ -231,9 +250,10 @@ const getAdditionalPokemons = async () => {
   outputArray(newPokemons);
 }
 
-const button  = document.querySelector('.buttonNewPok')
+if (window.location.href.match('#')) {
+  const pokemonId = GetPokemonIdFromUrl(window.location.href);
 
-button.addEventListener('click', () => {
-  offsetPok += 12
-  getAdditionalPokemons()
-});
+  RenderPokemonPage({ id: pokemonId });
+} else {
+  getPokemons()
+}
