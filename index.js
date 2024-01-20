@@ -1,19 +1,23 @@
 let app = document.getElementById("app");
-const limitPokemnon = 12;
-const url = `https://pokeapi.co/api/v2/pokemon/?limit=${limitPokemnon}&offset=0`
+let limitPokemnon = 12;
+let offsetPok = 0
 const base = [];
 
 const mainContainer = Creatcontainer();
 async function getPokemons() {
+  const url = `https://pokeapi.co/api/v2/pokemon/?limit=${limitPokemnon}&offset=${offsetPok}`
+
     const response = await fetch(url)
     const data =  await response.json()// парсим промис
     const parametersPokemons = data.results // задаю ссылку для мапа 
     // получаю все урлы и передаю в новую функцию
+
       await Promise.allSettled( parametersPokemons.map(async(parametrPokemon) =>{
       await getPokemon(parametrPokemon.url)
      const pokemonGet = await getPokemon(parametrPokemon.url) 
      base.push(pokemonGet)
     }))
+
     base.sort((a, b)=>{
       return a.id - b.id
     })
@@ -22,9 +26,10 @@ async function getPokemons() {
 
 getPokemons()
 async function getPokemon(PokemonUrl){
-    const response = await fetch(PokemonUrl)// отправляю все урлы
-     const poks = await response.json()// парсим урлы
-     return poks
+  const response = await fetch(PokemonUrl)// отправляю все урлы
+  const poks = await response.json()// парсим урлы
+  return poks
+
     //base.push(poks) // полученные данные отправляю в 
 }
 
@@ -53,6 +58,11 @@ function Creatcontainer() {
   groupCardPoc.className = "groupCardPoc";
   mainContainer.appendChild(groupCardPoc);
 
+  const buttonNewPok = document.createElement('button');
+  buttonNewPok.className = 'buttonNewPok';
+  buttonNewPok.innerHTML = 'Load more Pokemon'
+  mainContainer.appendChild(buttonNewPok);
+
   return groupCardPoc;
 }
 
@@ -71,7 +81,6 @@ pokToStr = pok.toString()
 
 let count = 0 
 
-
 for(i = 0; i <= pokToStr.length; i++){
   count =  i
 }
@@ -89,7 +98,6 @@ if(count === 1) {
   return `#${pok}`
 }
 }
-
 
 function pokemonShow(basePok, groupCardPoc) {
   blankDatabaseDataStub(basePok);
@@ -119,6 +127,9 @@ function pokemonShow(basePok, groupCardPoc) {
   const typePok = document.createElement("div");
   typePok.className = "typePok";
   informElements.append(textIdPoc, namePokemon, typePok);
+  
+  
+
 
   renderCreatwsTypePokemon(basePok, typePok);
 
@@ -213,3 +224,29 @@ function blankDatabaseDataStub(basePok) {
   }
 }
 
+const button  = document.querySelector('.buttonNewPok')
+//фукнция по получению новой пачки покемонов, отрисовываем их и добавляем в base
+const getAdditionalPokemons = async () => {
+  const newPokemons = [];
+  const url = `https://pokeapi.co/api/v2/pokemon/?limit=${limitPokemnon}&offset=${offsetPok}`
+  const response = await fetch(url)
+  const data =  await response.json()// парсим промис
+  const parametersPokemons = data.results
+  
+  await Promise.allSettled( parametersPokemons.map(async(parametrPokemon) =>{
+    const pokemonGet = await getPokemon(parametrPokemon.url) 
+    newPokemons.push(pokemonGet)
+  }))
+
+  newPokemons.sort((a, b)=>{
+    return a.id - b.id
+  })
+
+  base.push(...newPokemons)
+  outputArray(newPokemons)
+}
+
+button.addEventListener('click',() => {
+  offsetPok += 12
+  getAdditionalPokemons()
+});
