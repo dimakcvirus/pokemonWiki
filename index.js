@@ -1,41 +1,39 @@
+const BASE_URL = 'https://pokeapi.co/api/v2/';
+const LIMIT_POKEMNON = 12;
+
 let app = document.getElementById("app");
-let limitPokemnon = 12;
 let offsetPok = 0
 const base = [];
+let innerPokemonData = null;
 
 const mainContainer = Creatcontainer();
+
 async function getPokemons() {
-  const url = `https://pokeapi.co/api/v2/pokemon/?limit=${limitPokemnon}&offset=${offsetPok}`
+  const response = await fetch(`${BASE_URL}pokemon/?limit=${LIMIT_POKEMNON}&offset=${offsetPok}`);
+  const data =  await response.json(); // парсим промис
+  const parametersPokemons = data.results; // задаю ссылку для мапа 
+  // получаю все урлы и передаю в новую функцию
 
-    const response = await fetch(url)
-    const data =  await response.json()// парсим промис
-    const parametersPokemons = data.results // задаю ссылку для мапа 
-    // получаю все урлы и передаю в новую функцию
+  await Promise.allSettled(parametersPokemons.map(async (parametrPokemon) => {
+    const pokemonData = await getPokemon(parametrPokemon.url);
+    base.push(pokemonData)
+  }));
 
-      await Promise.allSettled( parametersPokemons.map(async(parametrPokemon) =>{
-      await getPokemon(parametrPokemon.url)
-     const pokemonGet = await getPokemon(parametrPokemon.url) 
-     base.push(pokemonGet)
-    }))
+  base.sort((a, b) => {
+    return a.id - b.id
+  });
 
-    base.sort((a, b)=>{
-      return a.id - b.id
-    })
-    outputArray(base)//отрисовка вызовется только тогда, когда выполнется allSettled
-    }
-
-getPokemons()
-async function getPokemon(PokemonUrl){
-  const response = await fetch(PokemonUrl)// отправляю все урлы
-  const poks = await response.json()// парсим урлы
-  return poks
-
-    //base.push(poks) // полученные данные отправляю в 
+  outputArray(base); //отрисовка вызовется только тогда, когда выполнется allSettled
 }
 
+getPokemons()
 
+const getPokemon = async (pokemonUrl) => {
+  const response = await fetch(pokemonUrl); // отправляю все урлы
+  const pokemonData = await response.json(); // парсим урлы
 
-let innerPokemonData = null;
+  return pokemonData
+}
 
 // обработчик нажатий на ссылки
 let linksHandler = (event) => {
@@ -71,38 +69,32 @@ function outputArray(base) {
     const basePok = base[index];
     pokemonShow(basePok, mainContainer);
     blankDatabaseDataStub(basePok);
-    showId(basePok);
+    getId(basePok);
   }
 }
 
-const showId = (basePok) =>{
-pok = basePok.id
-pokToStr = pok.toString()
+const getId = (basePok) => {
+  const pokemonId = basePok.id
+  let stringPokemonId = pokemonId.toString()
 
-let count = 0 
-
-for(i = 0; i <= pokToStr.length; i++){
-  count =  i
-}
-
-if(count === 1) {
-   return `#000${pok}`
-  
-}else if (count === 2){
-   return `#00${pok}`
-
-}else if (count === 3){
-   return `#0${pok}`
-  
-}else if (count === 4){
-  return `#${pok}`
-}
-}
+  switch (stringPokemonId.length) {
+    case 1:
+      return `#000${pokemonId}`;
+    case 2:
+      return `#00${pokemonId}`;
+    case 3:
+      return `#0${pokemonId}`;
+    case 4:
+      return `#${pokemonId}`;
+    default:
+      return `#000${pokemonId}`;
+  }
+};
 
 function pokemonShow(basePok, groupCardPoc) {
   blankDatabaseDataStub(basePok);
   const cardPok = document.createElement("a");
-  //cardPok.href = `/pokemons/${basePok.idPokemon.replace("#", "")}`;
+  cardPok.href = `/pokemons/${basePok.id}`;
   cardPok.style.textDecoration = "none";
   cardPok.style.color = "#000";
   cardPok.className = "cardPok";
@@ -116,9 +108,9 @@ function pokemonShow(basePok, groupCardPoc) {
   const informElements = document.createElement("div");
   cardPok.appendChild(informElements);
   informElements.className = "informElements";
-  const textIdPoc = document.createElement("div");
-  textIdPoc.className = "textIdPoc";
-  textIdPoc.textContent = showId(basePok);
+  const textIdPok = document.createElement("div");
+  textIdPok.className = "textIdPok";
+  textIdPok.textContent = getId(basePok);
 
   const namePokemon = document.createElement("h2");
   namePokemon.className = "namePokemon";
@@ -126,10 +118,7 @@ function pokemonShow(basePok, groupCardPoc) {
 
   const typePok = document.createElement("div");
   typePok.className = "typePok";
-  informElements.append(textIdPoc, namePokemon, typePok);
-  
-  
-
+  informElements.append(textIdPok, namePokemon, typePok);
 
   renderCreatwsTypePokemon(basePok, typePok);
 
@@ -137,12 +126,11 @@ function pokemonShow(basePok, groupCardPoc) {
   cardPok.onclick = linksHandler;
 }
 
-
 function renderCreatwsTypePokemon(basePok, typePok) {
-
   if (basePok.types) {
     const maxTypesToShow = 4;
     let typesShown = 0;
+
     for (let key in basePok.types) {
       if (typesShown >= maxTypesToShow) {
         break;
@@ -191,9 +179,9 @@ const RenderPokemonPage = async ({ id }) => {
   const img = document.createElement("img");
   img.src = innerPokemonData.imgPokemon;
 
-  const textIdPoc = document.createElement("p");
-  textIdPoc.className = "textIdPoc";
-  textIdPoc.textContent = innerPokemonData.idPokemon;
+  const textIdPok = document.createElement("p");
+  textIdPok.className = "textIdPok";
+  textIdPok.textContent = innerPokemonData.idPokemon;
 
   const namePokemon = document.createElement("h2");
   namePokemon.className = "namePokemon";
@@ -203,14 +191,13 @@ const RenderPokemonPage = async ({ id }) => {
   typePok.className = "typePok";
 
   renderCreatwsTypePokemon(innerPokemonData, typePok);
-  innerPokemonContainer.append(img, textIdPoc, namePokemon, typePok);
+  innerPokemonContainer.append(img, textIdPok, namePokemon, typePok);
 
   let theFirstChild = app.firstElementChild;
   theFirstChild.style.display = "none";
 
   app.insertBefore(innerPokemonContainer, theFirstChild);
 };
-
 
 function blankDatabaseDataStub(basePok) {
   if (basePok.imgPokemon === "") {
@@ -224,29 +211,29 @@ function blankDatabaseDataStub(basePok) {
   }
 }
 
-const button  = document.querySelector('.buttonNewPok')
 //фукнция по получению новой пачки покемонов, отрисовываем их и добавляем в base
 const getAdditionalPokemons = async () => {
   const newPokemons = [];
-  const url = `https://pokeapi.co/api/v2/pokemon/?limit=${limitPokemnon}&offset=${offsetPok}`
-  const response = await fetch(url)
-  const data =  await response.json()// парсим промис
-  const parametersPokemons = data.results
-  
-  await Promise.allSettled( parametersPokemons.map(async(parametrPokemon) =>{
-    const pokemonGet = await getPokemon(parametrPokemon.url) 
-    newPokemons.push(pokemonGet)
+  const url = `${BASE_URL}pokemon/?limit=${LIMIT_POKEMNON}&offset=${offsetPok}`;
+  const response = await fetch(url);
+  const data =  await response.json(); // парсим промис
+
+  await Promise.allSettled(data.results.map(async(parametrPokemon) => {
+    const pokemonData = await getPokemon(parametrPokemon.url);
+    newPokemons.push(pokemonData);
   }))
 
-  newPokemons.sort((a, b)=>{
-    return a.id - b.id
-  })
+  newPokemons.sort((a, b) => {
+    return a.id - b.id;
+  });
 
-  base.push(...newPokemons)
-  outputArray(newPokemons)
+  base.push(...newPokemons);
+  outputArray(newPokemons);
 }
 
-button.addEventListener('click',() => {
+const button  = document.querySelector('.buttonNewPok')
+
+button.addEventListener('click', () => {
   offsetPok += 12
   getAdditionalPokemons()
 });
