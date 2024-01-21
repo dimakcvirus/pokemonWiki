@@ -171,6 +171,9 @@ const RenderPokemonPage = async ({ id }) => {
   // если хэша нет - добавляем его в историю
   if (!window.location.href.match("#")) {
     history.pushState({}, null, window.location.href + `#pokemonId=${id}`);
+  } else {
+    const pokemonId = GetPokemonIdFromUrl(window.location.href);
+    history.pushState({}, null, window.location.href.replace(`=${pokemonId}`, `=${id}`));
   }
 
   let existingContainer = document.getElementById("inner-pokemon-container");
