@@ -155,9 +155,14 @@ const ShowMainPage = () => {
   // console.log('ShowMainPage');
   const mainContainer = document.querySelector(".mainContainer");
   let innerPokemonContainer = document.getElementById("inner-pokemon-container");
-
+  
+  innerPokemonContainer.style.display = 'none';
+  console.dir(innerPokemonContainer);
+  
+  // TODO: вернуть удаление после того как RenderPokemonPage будет готов
   // удаляем из ДОМ-дерева контент внутреннего покемона
-  innerPokemonContainer.remove();
+  // innerPokemonContainer.remove();
+
   // очищаем innerPokemonData
   innerPokemonData = null;
 
@@ -179,14 +184,11 @@ const RenderPokemonPage = async ({ id }) => {
   let existingContainer = document.getElementById("inner-pokemon-container");
 
   if (existingContainer) {
-      // удаляем из ДОМ-дерева контент внутреннего покемона чтобы отрисовать новый
-    existingContainer.remove();
+    // показываем внутреннюю страницу
+    existingContainer.style.display = 'flex';
     // очищаем innerPokemonData
     innerPokemonData = null;
   }
-  
-  let innerPokemonContainer = document.createElement("div");
-  innerPokemonContainer.id = "inner-pokemon-container";
 
   innerPokemonData = base.length && base.find((item) => Number(item.id) === Number(id));
 
@@ -195,30 +197,16 @@ const RenderPokemonPage = async ({ id }) => {
     innerPokemonData = await getPokemon(`https://pokeapi.co/api/v2/pokemon/${id}/`);
   }
 
-  const img = document.createElement("img");
-  img.className = "img";
-  img.src = innerPokemonData.sprites.other['official-artwork'].front_default;
+    console.log('innerPokemonData', innerPokemonData);
 
-  const informElements = document.createElement("div");
-  informElements.className = "informElements";
-  const textIdPok = document.createElement("div");
-  textIdPok.className = "textIdPok";
-  textIdPok.textContent = getId(innerPokemonData);
-
-  const namePokemon = document.createElement("h2");
-  namePokemon.className = "namePokemon";
-  namePokemon.textContent = innerPokemonData.name;
-
-  const typePok = document.createElement("div");
-  typePok.className = "typePok";
-  renderCreatwsTypePokemon(innerPokemonData, typePok);
-  innerPokemonContainer.append(img, textIdPok, namePokemon, typePok);
+  /*
+    !!!!!!!!!!!!!!!!! место для генерации html который сейчас прописан руками в index.html
+    все данные которые будут нужны для отрисовки хранятся в обьекте innerPokemonData
+  */
 
   // находим "mainContainer" который мы генерируем в методе "Creatcontainer"
   const mainContainer = document.querySelector(".mainContainer");
   mainContainer.style.display = "none"; // скрываем его в DOM-дереве
-
-  app.append(innerPokemonContainer);
 };
 
 function blankDatabaseDataStub(basePok) {
