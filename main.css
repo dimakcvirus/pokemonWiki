@@ -308,7 +308,7 @@
   font-weight: 500;
 }
 
-.container {
+#inner-pokemon-container {
   max-width: 1024px;
   display: flex;
   flex-direction: column;
