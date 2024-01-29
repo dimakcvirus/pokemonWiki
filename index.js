@@ -260,3 +260,33 @@ if (window.location.href.match('#')) {
 } else {
   getPokemons()
 }
+
+const RenderStats = () => {
+  const maxStat = 200;
+  const fillColor = '#30a7d7';
+  const pokemonStats = {
+    'hp': 15,
+    'attack': 30,
+    'defense': 50,
+    'special-attack': 100,
+    'special-defense': 150,
+    'seed': 200,
+  }
+
+  const fillStatsItems = (statsArray, statType) => {
+    statsArray.forEach((item, index) => {
+      if (index + 1 <= Math.floor((pokemonStats[statType] / maxStat) * statsArray.length)) {
+        item.style.background = fillColor;
+      }
+    })
+  }
+
+  Object.keys(pokemonStats).forEach(statName => {
+    const element = document.getElementById(statName);
+    const elementChildrens = [].map.call(element.children, el => el).reverse();
+
+    fillStatsItems(elementChildrens, statName)
+  })
+}
+
+RenderStats();
