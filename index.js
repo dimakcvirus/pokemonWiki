@@ -274,10 +274,11 @@ const RenderStats = () => {
     const element = document.getElementById(statName);
     const elementChildrens = [].map.call(element.children, el => el).reverse();// не очень понятно как тут появляется масив
 
-    fillStatsItems(elementChildrens, statName) // сюда передается якобы statsArray и statType
+    fillStatsItems(elementChildrens, statName) // сюда передается якобы statsArray и statType!!
   })
 }
 
  RenderStats();
 
 
+ 
