@@ -193,7 +193,7 @@
   color:#616161;
 }
 
-.zagolovok {
+.containerNameId {
   display: flex;
   justify-content: center;
   font-size: 32px;
@@ -201,7 +201,7 @@
   margin: 20px auto;
 }
 
-.zagId {
+.pokemonId {
   color: #616161;
 }
 
@@ -283,7 +283,7 @@
   width: 20px;
 }
 
-.Weaknesses {
+.weaknesses {
   display: flex;
   gap: 5px;
   width: 450px;
@@ -314,6 +314,7 @@
   flex-direction: column;
   align-items: center;
   margin: 50px auto;
+  background-color: white;
 }
 
 .cont {
@@ -350,7 +351,7 @@
 
 .containerEvolutions {
   background-image: url("./img/body_gray_bg.png");
-  width: 100%;
+  width: 90%;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -393,4 +394,10 @@
 
 .idEvolution {
   color: grey;
+}
+.evolution-items span img {
+  width: 35px;
+}
+.evolution-items span {
+  margin-top: -15%;
 }

@@ -191,6 +191,7 @@ const RenderPokemonPage = async ({ id }) => {
   }
 
   innerPokemonData = base.length && base.find((item) => Number(item.id) === Number(id));
+  console.log('innerPokemonDataLoh' , innerPokemonData);
 
   if (!innerPokemonData) {
     // если в массиве base нет нужного покемона - получаем его
@@ -250,9 +251,9 @@ if (window.location.href.match('#')) {
 }
 
 const RenderStats = () => {
-  const maxStat = 200;
-  const fillColor = '#30a7d7';
-  const pokemonStats = {
+  const maxStat = 200; // максимальное значение статов 
+  const fillColor = '#30a7d7';// цвет на который меняем ли
+  const pokemonStats = {//обекты которые содержащие статы покемонов 
     'hp': 15,
     'attack': 30,
     'defense': 50,
@@ -261,7 +262,7 @@ const RenderStats = () => {
     'seed': 200,
   }
 
-  const fillStatsItems = (statsArray, statType) => {
+  const fillStatsItems = (statsArray, statType) => { 
     statsArray.forEach((item, index) => {
       if (index + 1 <= Math.floor((pokemonStats[statType] / maxStat) * statsArray.length)) {
         item.style.background = fillColor;
@@ -277,4 +278,6 @@ const RenderStats = () => {
   })
 }
 
-RenderStats();
+ RenderStats();
+
+
