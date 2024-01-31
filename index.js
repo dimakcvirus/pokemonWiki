@@ -266,15 +266,15 @@ const RenderStats = () => {
     statsArray.forEach((item, index) => {
       if (index + 1 <= Math.floor((pokemonStats[statType] / maxStat) * statsArray.length)) {
         item.style.background = fillColor;
-      }
+      }// не очень понятно что тут происходит  index + 1 
     })
   }
 
   Object.keys(pokemonStats).forEach(statName => {
     const element = document.getElementById(statName);
-    const elementChildrens = [].map.call(element.children, el => el).reverse();
+    const elementChildrens = [].map.call(element.children, el => el).reverse();// не очень понятно как тут появляется масив
 
-    fillStatsItems(elementChildrens, statName)
+    fillStatsItems(elementChildrens, statName) // сюда передается якобы statsArray и statType
   })
 }
 
