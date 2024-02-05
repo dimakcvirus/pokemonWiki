@@ -199,7 +199,7 @@ const RenderPokemonPage = async ({ id }) => {
   addTypeRendering(innerPokemonData.types)
   buttonbackWisibl(innerPokemonData.id)
   RenderStats(innerPokemonData.stats)
-  test(innerPokemonData.id)
+  setButtonIdName(innerPokemonData.id)
 
   console.log('innerPokemonData', innerPokemonData);
 
@@ -355,7 +355,7 @@ const buttonbackWisibl = (id) => {
   }
 }
 
-async function test(id) {
+async function setButtonIdName(id) {
   const backId = id - 1;
   const nextId = id + 1;
   
@@ -391,3 +391,8 @@ back.addEventListener('click',(event) => {
   RenderPokemonPage({ id: nextPokemon })
   buttonbackWisibl()
 });
+
+
+function evo (id) {
+
+}
