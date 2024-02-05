@@ -70,14 +70,14 @@ function Creatcontainer() {
 function outputArray(base) {
   for (let index = 0; index < base.length; index++) {
     const basePok = base[index];
-    pokemonShow(basePok, mainContainer);
+    pokemonShow(basePok, mainContainer, basePok.id);
     blankDatabaseDataStub(basePok);
-    getId(basePok);
+    getId(basePok.id);
   }
 }
 
-const getId = (basePok) => {
-  const pokemonId = basePok.id
+const getId = (id) => {
+  const pokemonId = id
   let stringPokemonId = pokemonId.toString()
 
   switch (stringPokemonId.length) {
@@ -94,7 +94,7 @@ const getId = (basePok) => {
   }
 };
 
-function pokemonShow(basePok, groupCardPoc) {
+function pokemonShow(basePok, groupCardPoc, id) {
   blankDatabaseDataStub(basePok);
   const cardPok = document.createElement("div");
   cardPok.className = "cardPok";
@@ -112,7 +112,7 @@ function pokemonShow(basePok, groupCardPoc) {
   informElements.className = "informElements";
   const textIdPok = document.createElement("div");
   textIdPok.className = "textIdPok";
-  textIdPok.textContent = getId(basePok);
+  textIdPok.textContent = getId(id);
 
   const namePokemon = document.createElement("h2");
   namePokemon.className = "namePokemon";
@@ -152,7 +152,6 @@ function renderCreatwsTypePokemon(basePok, typePok) {
 }
 
 const ShowMainPage = () => {
-  // console.log('ShowMainPage');
   const mainContainer = document.querySelector(".mainContainer");
   let innerPokemonContainer = document.getElementById("inner-pokemon-container");
   
@@ -171,8 +170,6 @@ const ShowMainPage = () => {
 };
 
 const RenderPokemonPage = async ({ id }) => {
-  // console.log('RenderPokemonPage', id);
-
   // если хэша нет - добавляем его в историю
   if (!window.location.href.match("#")) {
     history.pushState({}, null, window.location.href + `#pokemonId=${id}`);
@@ -191,14 +188,20 @@ const RenderPokemonPage = async ({ id }) => {
   }
 
   innerPokemonData = base.length && base.find((item) => Number(item.id) === Number(id));
-  console.log('innerPokemonDataLoh' , innerPokemonData);
 
   if (!innerPokemonData) {
     // если в массиве base нет нужного покемона - получаем его
     innerPokemonData = await getPokemon(`https://pokeapi.co/api/v2/pokemon/${id}/`);
   }
+  headersRenderNameID(innerPokemonData.name,innerPokemonData.id);
+  rendersImagePokemon(innerPokemonData.sprites.other["official-artwork"].front_default);
+  rendreHeightWidth(innerPokemonData.height, innerPokemonData.weight, innerPokemonData.abilities, innerPokemonData.id);
+  addTypeRendering(innerPokemonData.types)
+  buttonbackWisibl(innerPokemonData.id)
+  RenderStats(innerPokemonData.stats)
+  test(innerPokemonData.id)
 
-    console.log('innerPokemonData', innerPokemonData);
+  console.log('innerPokemonData', innerPokemonData);
 
   /*
     !!!!!!!!!!!!!!!!! место для генерации html который сейчас прописан руками в index.html
@@ -250,35 +253,141 @@ if (window.location.href.match('#')) {
   getPokemons()
 }
 
-const RenderStats = () => {
+const RenderStats = (stats) => {
+ 
   const maxStat = 200; // максимальное значение статов 
-  const fillColor = '#30a7d7';// цвет на который меняем ли
-  const pokemonStats = {//обекты которые содержащие статы покемонов 
-    'hp': 15,
-    'attack': 30,
-    'defense': 50,
-    'special-attack': 100,
-    'special-defense': 150,
-    'seed': 200,
-  }
+  const fillColor = '#30a7d7'; // цвет на который меняем ли
+  const pokemonStats = {} //обекты которые содержащие статы покемонов 
+
+     stats.forEach((item) => {
+     pokemonStats[item.stat.name] =  item.base_stat
+   }) 
 
   const fillStatsItems = (statsArray, statType) => { 
     statsArray.forEach((item, index) => {
       if (index + 1 <= Math.floor((pokemonStats[statType] / maxStat) * statsArray.length)) {
         item.style.background = fillColor;
-      }// не очень понятно что тут происходит  index + 1 
+      }
     })
   }
 
   Object.keys(pokemonStats).forEach(statName => {
     const element = document.getElementById(statName);
-    const elementChildrens = [].map.call(element.children, el => el).reverse();// не очень понятно как тут появляется масив
+    const elementChildrens = [].map.call(element.children, el  => el  ).reverse();
 
-    fillStatsItems(elementChildrens, statName) // сюда передается якобы statsArray и statType!!
+    fillStatsItems(elementChildrens, statName)
   })
 }
 
- RenderStats();
+ function ucFirst(str) {
+  if (!str) return str;
+  return str[0].toUpperCase() + str.slice(1);
+}
+
+function headersRenderNameID (name, id) {
+  
+  const pokemonName = document.querySelector('.pokemonName');
+  const pokemonID = document.querySelector('.pokemonId');
+   
+  let idPokemon =  getId(id);
+  let names = ucFirst(name);
+
+  pokemonName.innerHTML = names;
+  pokemonID.innerHTML = idPokemon
+}
 
 
- 
+function rendersImagePokemon (urlImg) {
+ const img = document.querySelector('.imgPokemon');
+ img.src = `${urlImg}`;
+}
+
+function setAbilites (searchElm, changeElm) { 
+  const liElements = document.querySelectorAll('.abilites li');
+  liElements.forEach((li, index) => {
+   // Проверяем, содержит ли элемент текст "Height"
+   if (li.textContent === searchElm) {
+   // Если да, то выводим следующий элемент <li> (индекс + 1)
+   const nextLiIndex = index + 1;
+   liElements[nextLiIndex].innerHTML = changeElm
+   }
+  })
+}
+
+function rendreHeightWidth(height,weight,abilities,id) {  
+    setAbilites( 'Height', height);
+    setAbilites( 'Weight', weight);
+    setAbilites('Abilites' , abilities[0].ability.name)
+    gettinCategory(id)
+}
+
+async function gettinCategory  (id) {
+  let category = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+  let json = await category.json();
+
+  json.genera.forEach(index => {
+    if(index.language.name === 'en'){
+      const category = index.genus.split(' ', 2);
+      setAbilites( 'Category', category[0].toLowerCase());
+    }
+  })
+}
+
+const addTypeRendering = (types) => {
+  const weaknesses = document.querySelector('.weaknesses')
+  weaknesses.innerHTML = ''
+  
+  types.forEach((item)=>{
+    const type = document.createElement("span");
+       type.classList.add(item.type.name);
+       type.classList.add("pokemonType");
+       type.textContent = item.type.name;
+       weaknesses.appendChild(type);
+  })
+}
+const buttonbackWisibl = (id) => {
+  const back = document.querySelector('#back');
+
+  if(id === 1){
+   back.style.display = 'none';
+  }else{
+    back.style.display = 'flex';
+  }
+}
+
+async function test(id) {
+  const backId = id - 1;
+  const nextId = id + 1;
+  
+  if (backId >= 1) {
+    let category1 = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${backId}`);
+    let json1 = await category1.json();
+    const id1 = document.querySelector('#back .id');
+    const name1 = document.querySelector('#back .name');
+    id1.innerHTML = `#${json1.id}`;
+    name1.innerHTML = json1.name;
+  } else { }
+
+  let category2 = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${nextId}`);
+  let json2 = await category2.json();
+  const id2 = document.querySelector('#next .id');
+  const name2 = document.querySelector('#next .name');
+  id2.innerHTML = `#${json2.id}`;
+  name2.innerHTML = json2.name;
+}
+
+const next = document.querySelector('#next');
+const back = document.querySelector('#back');
+
+next.addEventListener('click',(event) => {
+  const nextPokemon = innerPokemonData.id + 1
+  console.log(nextPokemon)
+  RenderPokemonPage({ id: nextPokemon })
+});
+
+back.addEventListener('click',(event) => {
+  const nextPokemon = innerPokemonData.id - 1
+  console.log(nextPokemon)
+  RenderPokemonPage({ id: nextPokemon })
+  buttonbackWisibl()
+});
