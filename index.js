@@ -76,6 +76,7 @@ function outputArray(base) {
   }
 }
 
+
 const getId = (id) => {
   const pokemonId = id
   let stringPokemonId = pokemonId.toString()
@@ -112,6 +113,7 @@ function pokemonShow(basePok, groupCardPoc, id) {
   informElements.className = "informElements";
   const textIdPok = document.createElement("div");
   textIdPok.className = "textIdPok";
+  textIdPok.textContent = getId(id);
   textIdPok.textContent = getId(id);
 
   const namePokemon = document.createElement("h2");
@@ -253,6 +255,7 @@ if (window.location.href.match('#')) {
   getPokemons()
 }
 
+ 
 const RenderStats = (stats) => {
  
   const maxStat = 200; // максимальное значение статов 
@@ -270,6 +273,7 @@ const RenderStats = (stats) => {
       }
     })
   }
+
 
   Object.keys(pokemonStats).forEach(statName => {
     const element = document.getElementById(statName);
@@ -393,6 +397,3 @@ back.addEventListener('click',(event) => {
 });
 
 
-function evo (id) {
-
-}
