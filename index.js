@@ -70,14 +70,15 @@ function Creatcontainer() {
 function outputArray(base) {
   for (let index = 0; index < base.length; index++) {
     const basePok = base[index];
-    pokemonShow(basePok, mainContainer);
+    pokemonShow(basePok, mainContainer, basePok.id);
     blankDatabaseDataStub(basePok);
-    getId(basePok);
+    getId(basePok.id);
+    // console.log('basePok',basePok.id)
   }
 }
 
-const getId = (basePok) => {
-  const pokemonId = basePok.id
+const getId = (id) => {
+  const pokemonId = id
   let stringPokemonId = pokemonId.toString()
 
   switch (stringPokemonId.length) {
@@ -94,7 +95,7 @@ const getId = (basePok) => {
   }
 };
 
-function pokemonShow(basePok, groupCardPoc) {
+function pokemonShow(basePok, groupCardPoc, id) {
   blankDatabaseDataStub(basePok);
   const cardPok = document.createElement("div");
   cardPok.className = "cardPok";
@@ -112,7 +113,7 @@ function pokemonShow(basePok, groupCardPoc) {
   informElements.className = "informElements";
   const textIdPok = document.createElement("div");
   textIdPok.className = "textIdPok";
-  textIdPok.textContent = getId(basePok);
+  textIdPok.textContent = getId(id);
 
   const namePokemon = document.createElement("h2");
   namePokemon.className = "namePokemon";
@@ -191,18 +192,17 @@ const RenderPokemonPage = async ({ id }) => {
   }
 
   innerPokemonData = base.length && base.find((item) => Number(item.id) === Number(id));
-  console.log('innerPokemonDataLoh' , innerPokemonData);
 
   if (!innerPokemonData) {
     // если в массиве base нет нужного покемона - получаем его
     innerPokemonData = await getPokemon(`https://pokeapi.co/api/v2/pokemon/${id}/`);
   }
-  headersRenderNameID(innerPokemonData);
+  headersRenderNameID(innerPokemonData.name,innerPokemonData.id);
   rendersImagePokemon(innerPokemonData.sprites.other["official-artwork"].front_default);
-  rendreHeightWidth(innerPokemonData);
-  addTupeRendering(innerPokemonData)
-  test(innerPokemonData)
-  RenderStats(innerPokemonData)
+  rendreHeightWidth(innerPokemonData.height,innerPokemonData.weight,innerPokemonData.abilities,innerPokemonData.id);
+  addTupeRendering(innerPokemonData.types)
+  RenderStats(innerPokemonData.stats)
+  //evo(innerPokemonData.id)
 
     console.log('innerPokemonData', innerPokemonData);
 
@@ -256,28 +256,21 @@ if (window.location.href.match('#')) {
   getPokemons()
 }
 
-const RenderStats = (innerPokemonData) => {
-  let hp = innerPokemonData.stats[0].base_stat;
-  let attack = innerPokemonData.stats[1].base_stat;
-  let defense = innerPokemonData.stats[2].base_stat;
-  let special_attack = innerPokemonData.stats[3].base_stat;
-  let special_defen = innerPokemonData.stats[4].base_stat; 
+const RenderStats = (stats) => {
+ 
   const maxStat = 200; // максимальное значение статов 
-  const fillColor = '#30a7d7';// цвет на который меняем ли
-  const pokemonStats = {//обекты которые содержащие статы покемонов 
-    'hp': hp,
-    'attack': attack,
-    'defense': defense,
-    'special-attack': special_attack,
-    'special-defense': special_defen,
-    'seed': 200,
-  }
+  const fillColor = '#30a7d7'; // цвет на который меняем ли
+  const pokemonStats = {} //обекты которые содержащие статы покемонов 
+
+     stats.forEach((item) => {
+     pokemonStats[item.stat.name] =  item.base_stat
+   }) 
 
   const fillStatsItems = (statsArray, statType) => { 
     statsArray.forEach((item, index) => {
       if (index + 1 <= Math.floor((pokemonStats[statType] / maxStat) * statsArray.length)) {
         item.style.background = fillColor;
-      }// не очень понятно что тут происходит  index + 1 
+      } // не очень понятно что тут происходит  index + 1 
     })
   }
 
@@ -290,7 +283,7 @@ const RenderStats = (innerPokemonData) => {
   })
 }
 
-
+//RenderStats()
 
  function ucFirst(str) {
   if (!str) return str;
@@ -298,28 +291,26 @@ const RenderStats = (innerPokemonData) => {
   return str[0].toUpperCase() + str.slice(1);
 }
 
-function headersRenderNameID (innerPokemonData) {
+function headersRenderNameID (name, id) {
   
   const pokemonName = document.querySelector('.pokemonName');
   const pokemonID = document.querySelector('.pokemonId');
    
 
-  let id =  getId(innerPokemonData);
-  let names = ucFirst(innerPokemonData.name);
+  let idPokemon =  getId(id);
+  let names = ucFirst(name);
 
   pokemonName.innerHTML = names;
-  pokemonID.innerHTML = id
-  console.log(names,id)
+  pokemonID.innerHTML = idPokemon
 }
 
 
 function rendersImagePokemon (urlImg) {
  const img = document.querySelector('.imgPokemon');
  img.src = `${urlImg}`;
- console.log( img.src = `${urlImg}`)
 }
 
-function search (searchElm, changeElm) { 
+function setAbilites (searchElm, changeElm) { 
   const liElements = document.querySelectorAll('.abilites li');
   liElements.forEach((li, index) => {
    // Проверяем, содержит ли элемент текст "Height"
@@ -331,13 +322,11 @@ function search (searchElm, changeElm) {
   })
 }
 
-function rendreHeightWidth(innerPokemonData) {  
-    search( 'Height', innerPokemonData.height);
-    search( 'Weight', innerPokemonData.weight);
-    search('Abilites' ,innerPokemonData.abilities[0].ability.name)
-    gettinCategory(innerPokemonData.id,)
-    console.log('testAbility',innerPokemonData.abilities[0].ability.name)
-
+function rendreHeightWidth(height,weight,abilities,id) {  
+    setAbilites( 'Height', height);
+    setAbilites( 'Weight', weight);
+    setAbilites('Abilites' ,abilities[0].ability.name)
+    gettinCategory(id)
 }
 
 async function gettinCategory  (id) {
@@ -347,30 +336,21 @@ async function gettinCategory  (id) {
   json.genera.forEach(index => {
     if(index.language.name === 'en'){
       const category = index.genus.split(' ', 2);
-      search( 'Category', category[0].toLowerCase());
+      setAbilites( 'Category', category[0].toLowerCase());
     }
   })
 }
 
-function addTupeRendering(innerPokemonData) {
-  const types = document.querySelector('.weaknesses') 
-  for ( key in innerPokemonData.types){
-    console.log('types', innerPokemonData.types[key].type.name)
-
+const addTupeRendering = (types) => {
+  const weaknesses = document.querySelector('.weaknesses')
+  weaknesses.innerHTML = ''
+  
+  types.forEach((item)=>{
     const type = document.createElement("span");
-    type.classList.add(innerPokemonData.types[key].type.name);
-    type.classList.add("pokemonType");
-    type.textContent = innerPokemonData.types[key].type.name;
-    types.appendChild(type);
-  }
-
+       type.classList.add(item.type.name);
+       type.classList.add("pokemonType");
+       type.textContent = item.type.name;
+       weaknesses.appendChild(type);
+  })
 }
 
-function test (innerPokemonData) {
-
-
-  for (const key in  innerPokemonData.stats) {
-    
-      console.log(innerPokemonData.stats[key].base_stat)
-  }
-}
