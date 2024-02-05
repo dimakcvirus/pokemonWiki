@@ -401,3 +401,16 @@
 .evolution-items span {
   margin-top: -15%;
 }
+
+.home a {
+    display: flex;
+    background-color: azure;
+    width: 80px;
+    height: 40px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20%;
+    color: black;
+    text-decoration: none;
+}
