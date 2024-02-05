@@ -76,6 +76,7 @@ function outputArray(base) {
   }
 }
 
+
 const getId = (id) => {
   const pokemonId = id
   let stringPokemonId = pokemonId.toString()
@@ -112,6 +113,7 @@ function pokemonShow(basePok, groupCardPoc, id) {
   informElements.className = "informElements";
   const textIdPok = document.createElement("div");
   textIdPok.className = "textIdPok";
+  textIdPok.textContent = getId(id);
   textIdPok.textContent = getId(id);
 
   const namePokemon = document.createElement("h2");
@@ -152,7 +154,6 @@ function renderCreatwsTypePokemon(basePok, typePok) {
 }
 
 const ShowMainPage = () => {
-  // console.log('ShowMainPage');
   const mainContainer = document.querySelector(".mainContainer");
   let innerPokemonContainer = document.getElementById("inner-pokemon-container");
   
@@ -171,8 +172,6 @@ const ShowMainPage = () => {
 };
 
 const RenderPokemonPage = async ({ id }) => {
-  // console.log('RenderPokemonPage', id);
-
   // если хэша нет - добавляем его в историю
   if (!window.location.href.match("#")) {
     history.pushState({}, null, window.location.href + `#pokemonId=${id}`);
@@ -196,12 +195,14 @@ const RenderPokemonPage = async ({ id }) => {
     // если в массиве base нет нужного покемона - получаем его
     innerPokemonData = await getPokemon(`https://pokeapi.co/api/v2/pokemon/${id}/`);
   }
-  headersRenderNameID(innerPokemonData.name, innerPokemonData.id);
+  headersRenderNameID(innerPokemonData.name,innerPokemonData.id);
   rendersImagePokemon(innerPokemonData.sprites.other["official-artwork"].front_default);
   rendreHeightWidth(innerPokemonData.height, innerPokemonData.weight, innerPokemonData.abilities, innerPokemonData.id);
   addTypeRendering(innerPokemonData.types)
+  buttonbackWisibl(innerPokemonData.id)
   RenderStats(innerPokemonData.stats)
-  //evo(innerPokemonData.id)
+  setButtonIdName(innerPokemonData.id)
+
   console.log('innerPokemonData', innerPokemonData);
 
   /*
@@ -254,6 +255,7 @@ if (window.location.href.match('#')) {
   getPokemons()
 }
 
+ 
 const RenderStats = (stats) => {
  
   const maxStat = 200; // максимальное значение статов 
@@ -268,7 +270,7 @@ const RenderStats = (stats) => {
     statsArray.forEach((item, index) => {
       if (index + 1 <= Math.floor((pokemonStats[statType] / maxStat) * statsArray.length)) {
         item.style.background = fillColor;
-      } // не очень понятно что тут происходит  index + 1 
+      }
     })
   }
 
@@ -283,11 +285,11 @@ const RenderStats = (stats) => {
 
  function ucFirst(str) {
   if (!str) return str;
-
   return str[0].toUpperCase() + str.slice(1);
 }
 
-function headersRenderNameID (name, id) {  
+function headersRenderNameID (name, id) {
+  
   const pokemonName = document.querySelector('.pokemonName');
   const pokemonID = document.querySelector('.pokemonId');
    
@@ -297,6 +299,7 @@ function headersRenderNameID (name, id) {
   pokemonName.innerHTML = names;
   pokemonID.innerHTML = idPokemon
 }
+
 
 function rendersImagePokemon (urlImg) {
  const img = document.querySelector('.imgPokemon');
@@ -318,7 +321,7 @@ function setAbilites (searchElm, changeElm) {
 function rendreHeightWidth(height,weight,abilities,id) {  
     setAbilites( 'Height', height);
     setAbilites( 'Weight', weight);
-    setAbilites('Abilites' ,abilities[0].ability.name)
+    setAbilites('Abilites' , abilities[0].ability.name)
     gettinCategory(id)
 }
 
@@ -346,4 +349,51 @@ const addTypeRendering = (types) => {
        weaknesses.appendChild(type);
   })
 }
+const buttonbackWisibl = (id) => {
+  const back = document.querySelector('#back');
+
+  if(id === 1){
+   back.style.display = 'none';
+  }else{
+    back.style.display = 'flex';
+  }
+}
+
+async function setButtonIdName(id) {
+  const backId = id - 1;
+  const nextId = id + 1;
+  
+  if (backId >= 1) {
+    let category1 = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${backId}`);
+    let json1 = await category1.json();
+    const id1 = document.querySelector('#back .id');
+    const name1 = document.querySelector('#back .name');
+    id1.innerHTML = `#${json1.id}`;
+    name1.innerHTML = json1.name;
+  } else { }
+
+  let category2 = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${nextId}`);
+  let json2 = await category2.json();
+  const id2 = document.querySelector('#next .id');
+  const name2 = document.querySelector('#next .name');
+  id2.innerHTML = `#${json2.id}`;
+  name2.innerHTML = json2.name;
+}
+
+const next = document.querySelector('#next');
+const back = document.querySelector('#back');
+
+next.addEventListener('click',(event) => {
+  const nextPokemon = innerPokemonData.id + 1
+  console.log(nextPokemon)
+  RenderPokemonPage({ id: nextPokemon })
+});
+
+back.addEventListener('click',(event) => {
+  const nextPokemon = innerPokemonData.id - 1
+  console.log(nextPokemon)
+  RenderPokemonPage({ id: nextPokemon })
+  buttonbackWisibl()
+});
+
 
