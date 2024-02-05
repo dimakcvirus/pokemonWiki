@@ -73,7 +73,6 @@ function outputArray(base) {
     pokemonShow(basePok, mainContainer, basePok.id);
     blankDatabaseDataStub(basePok);
     getId(basePok.id);
-    // console.log('basePok',basePok.id)
   }
 }
 
@@ -197,14 +196,13 @@ const RenderPokemonPage = async ({ id }) => {
     // если в массиве base нет нужного покемона - получаем его
     innerPokemonData = await getPokemon(`https://pokeapi.co/api/v2/pokemon/${id}/`);
   }
-  headersRenderNameID(innerPokemonData.name,innerPokemonData.id);
+  headersRenderNameID(innerPokemonData.name, innerPokemonData.id);
   rendersImagePokemon(innerPokemonData.sprites.other["official-artwork"].front_default);
-  rendreHeightWidth(innerPokemonData.height,innerPokemonData.weight,innerPokemonData.abilities,innerPokemonData.id);
-  addTupeRendering(innerPokemonData.types)
+  rendreHeightWidth(innerPokemonData.height, innerPokemonData.weight, innerPokemonData.abilities, innerPokemonData.id);
+  addTypeRendering(innerPokemonData.types)
   RenderStats(innerPokemonData.stats)
   //evo(innerPokemonData.id)
-
-    console.log('innerPokemonData', innerPokemonData);
+  console.log('innerPokemonData', innerPokemonData);
 
   /*
     !!!!!!!!!!!!!!!!! место для генерации html который сейчас прописан руками в index.html
@@ -277,13 +275,11 @@ const RenderStats = (stats) => {
 
   Object.keys(pokemonStats).forEach(statName => {
     const element = document.getElementById(statName);
-    const elementChildrens = [].map.call(element.children, el  => el  ).reverse();// не очень понятно как тут появляется масив
+    const elementChildrens = [].map.call(element.children, el  => el  ).reverse();
 
-    fillStatsItems(elementChildrens, statName) // сюда передается якобы statsArray и statType!!
+    fillStatsItems(elementChildrens, statName)
   })
 }
-
-//RenderStats()
 
  function ucFirst(str) {
   if (!str) return str;
@@ -291,19 +287,16 @@ const RenderStats = (stats) => {
   return str[0].toUpperCase() + str.slice(1);
 }
 
-function headersRenderNameID (name, id) {
-  
+function headersRenderNameID (name, id) {  
   const pokemonName = document.querySelector('.pokemonName');
   const pokemonID = document.querySelector('.pokemonId');
    
-
   let idPokemon =  getId(id);
   let names = ucFirst(name);
 
   pokemonName.innerHTML = names;
   pokemonID.innerHTML = idPokemon
 }
-
 
 function rendersImagePokemon (urlImg) {
  const img = document.querySelector('.imgPokemon');
@@ -341,7 +334,7 @@ async function gettinCategory  (id) {
   })
 }
 
-const addTupeRendering = (types) => {
+const addTypeRendering = (types) => {
   const weaknesses = document.querySelector('.weaknesses')
   weaknesses.innerHTML = ''
   
