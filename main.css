@@ -308,6 +308,10 @@
   font-weight: 500;
 }
 
+.stats-title {
+  width: min-content;
+}
+
 #inner-pokemon-container {
   max-width: 1024px;
   display: flex;
