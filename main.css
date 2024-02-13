@@ -389,7 +389,8 @@
 
 .imgEvolution {
   border-radius: 50%;
-  border: solid 10px white
+  border: solid 10px white;
+  width: 235px;
 } 
 
 .nameEvolution {

@@ -196,8 +196,10 @@ const RenderPokemonPage = async ({ id }) => {
   buttonbackWisibl(innerPokemonData.id)
   RenderStats(innerPokemonData.stats)
   setButtonIdName(innerPokemonData.id)
+  addevoGroup(innerPokemonData.id)
+  
 
-  // console.log('innerPokemonData', innerPokemonData);
+   console.log('innerPokemonData', innerPokemonData);
 
   // находим "mainContainer" который мы генерируем в методе "Creatcontainer"
   const mainContainer = document.querySelector(".mainContainer");
@@ -299,6 +301,7 @@ const RenderStats = (stats) => {
   })
 }
 
+//делает первую букву в имени большой
 function ucFirst(str) {
   if (!str) return str;
   return str[0].toUpperCase() + str.slice(1);
@@ -408,5 +411,93 @@ back.addEventListener('click',(event) => {
   RenderPokemonPage({ id: nextPokemon })
   buttonbackWisibl()
 });
+
+async function addevoGroup (id) {
+  let idPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+  let json = await idPokemon.json();
+  console.log(json.evolution_chain.url)
+  const url = json.evolution_chain.url
+  setevoGroup (url)
+}
+
+async function setevoGroup (url) {
+  let idPokemon = await fetch(url);
+  let json = await idPokemon.json();
+  console.log(json.chain)
+  lol(json.chain,)
+  test(mass)
+}
+const mass =[]
+function lol(evol) {
+  console.log('------------------');
+  console.log('Имя покемона:', evol.species.name,'ссылка',evol.species.url);
+  let dann = evol.species.name
+  mass.push(dann)
+  
+  if (evol.evolves_to.length > 0) {
+      console.log('Следующий этап эволюции:');
+      evol.evolves_to.forEach(nextEvolution => {
+        lol(nextEvolution);
+      });
+  } else {
+      console.log('Это последний этап эволюции.');
+  }
+  
+}
+
+function test (urlPok) {
+  urlPok.forEach( async item => {
+   let urlPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${item}/`);
+   let json = await urlPokemon.json();
+   console.log('sss',item)
+ 
+   const namePokemon = json.name;
+   const idPokemon = json.id ;
+   const img = json.sprites.other["official-artwork"].front_default
+   creatEvol(namePokemon, idPokemon,img,json.types)
+  })
+ }
+ 
+ function creatEvol (namePokemon,idPokemon,imgpokemon,types){
+  const evolution_items = document.querySelector('.evolution-items');
+
+  const evolution_item = document.createElement('div');
+  evolution_item.className = 'evolution-item'
+  evolution_items.appendChild(evolution_item)
+
+  const a = document.createElement('a');
+  evolution_item.appendChild(a)
+
+  const img = document.createElement('img');
+  img.className = 'imgEvolution';
+  img.src = imgpokemon
+  a.appendChild(img)
+
+  const nameEvolution = document.createElement('h3');
+  nameEvolution.className = 'nameEvolution';
+  nameEvolution.innerHTML =  ucFirst(namePokemon)
+  evolution_item.appendChild(nameEvolution)
+
+  const idEvolution = document.createElement('span');
+  idEvolution.className = 'idEvolution';
+  idEvolution.innerHTML = getId(idPokemon)
+  nameEvolution.appendChild(idEvolution)
+
+  const typePok = document.createElement('ul');
+  typePok.className = 'typePok';
+  evolution_item.appendChild(typePok)
+  
+  types.forEach(type => {
+    const pokemonType = document.createElement('li');
+    pokemonType.className = 'pokemonType';
+    pokemonType.classList.add(type.type.name);
+
+    pokemonType.textContent = type.type.name;
+    typePok.appendChild(pokemonType);
+    console.log()
+  });
+
+ }
+
 
 
