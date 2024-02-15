@@ -218,6 +218,8 @@ const RenderPokemonPage = async ({ id }) => {
   buttonbackWisibl(innerPokemonData.id);
   RenderStats(innerPokemonData.stats);
   setButtonIdName(innerPokemonData.id);
+  const evolution_items = document.querySelector(".evolution-items");  
+  evolution_items.innerHTML = ''
   addevoGroup(innerPokemonData.id);
 
   console.log("innerPokemonData", innerPokemonData);
@@ -433,22 +435,25 @@ async function setButtonIdName(id) {
 const next = document.querySelector("#next");
 const back = document.querySelector("#back");
 
-next.addEventListener("click", (event) => {
-  const nextPokemon = innerPokemonData.id + 1;
-  const evolution_items = document.querySelector(".evolution-items")
-  evolution_items.innerHTML = ''
-  mass.length=0;
+function handleButtonClick(nextPokemon) {
+  const evolution_items = document.querySelector(".evolution-items");
+  evolution_items.innerHTML = '';
+  pokemonNames = []
   RenderPokemonPage({ id: nextPokemon });
+}
+
+document.addEventListener("click", (event) => {
+  if (event.target.id === "next") {
+    const nextPokemon = innerPokemonData.id + 1;
+    handleButtonClick(nextPokemon);
+  } else if (event.target.id === "back") {
+    const nextPokemon = innerPokemonData.id - 1;
+    handleButtonClick(nextPokemon);
+    buttonbackWisibl();
+  }
 });
 
-back.addEventListener("click", (event) => {
-  const nextPokemon = innerPokemonData.id - 1;
-  const evolution_items = document.querySelector(".evolution-items")
-  evolution_items.innerHTML = ''
-  mass.length=0;
-  RenderPokemonPage({ id: nextPokemon });
-  buttonbackWisibl();
-});
+
 //функция которая получает группу покемонов эволюции
 async function addevoGroup(id) {
   let idPokemon = await fetch(
@@ -463,41 +468,19 @@ async function setevoGroup(url) {
   let idPokemon = await fetch(url);
   let json = await idPokemon.json();
   gettingNamesPokemonGroup(json.chain);
-  loadPokemonData(mass);
+  loadPokemonData(pokemonNames);
   gettingNamesPokemonGroup
 }
-const mass = [];
+let pokemonNames = [];
 //функция которя получает имена покемонов из группы эволюции
 function gettingNamesPokemonGroup(evol) {
-  let dann = evol.species.name;
-  mass.push(dann);
+  let evolutionSpeciesName = evol.species.name;
+  pokemonNames.push(evolutionSpeciesName);
   if (evol.evolves_to.length) {
     evol.evolves_to.forEach((nextEvolution) => {
       gettingNamesPokemonGroup(nextEvolution); //evol.evol.evolves_to[0]
     });
   }
-}
-/// функция с которой списываю аллсетлед
-async function getPokemons() {
-  const response = await fetch(
-    `${BASE_URL}pokemon/?limit=${LIMIT_POKEMNON}&offset=${offsetPok}`
-  );
-  const data = await response.json(); // парсим промис
-  const parametersPokemons = data.results; // задаю ссылку для мапа
-  // получаю все урлы и передаю в новую функцию
-
-  await Promise.allSettled(
-    parametersPokemons.map(async (parametrPokemon) => {
-      const pokemonData = await getPokemon(parametrPokemon.url);
-      base.push(pokemonData);
-    })
-  );
-
-  base.sort((a, b) => {
-    return a.id - b.id;
-  });
-
-  outputArray(base); //отрисовка вызовется только тогда, когда выполнется allSettled
 }
 
 
@@ -537,7 +520,7 @@ async function loadPokemonData(urlPok) {
 
 //функция создает и отрисовывет блок эволюции
 function creatEvol(namePokemon, idPokemon, imgpokemon, types) {
-  const evolution_items = document.querySelector(".evolution-items");
+  const evolution_items = document.querySelector(".evolution-items");  
 
   const evolution_item = document.createElement("div");
   evolution_item.className = "evolution-item";
@@ -545,7 +528,7 @@ function creatEvol(namePokemon, idPokemon, imgpokemon, types) {
 
   const a = document.createElement("a");
   evolution_item.appendChild(a);
-  a.href = `pokemons/${idPokemon}`;
+  a.href = `/pokemons/${idPokemon}`;
   a.onclick = linksHandler;
 
   const img = document.createElement("img");
@@ -577,6 +560,10 @@ function creatEvol(namePokemon, idPokemon, imgpokemon, types) {
     typePok.appendChild(pokemonType);
     
   });
+  pokemonNames = []
+
 }
+
+
 
 
