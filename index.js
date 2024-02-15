@@ -39,8 +39,10 @@ const getPokemon = async (pokemonUrl) => {
 
 // обработчик нажатий на ссылки
 let linksHandler = (event) => {
+ 
   // получаем запрошенный url
   let url = new URL(event.currentTarget.href);
+  console.log(url)
 
   // запускаем роутер, предавая ему path
   Router.dispatch(url.pathname);
@@ -433,11 +435,17 @@ const back = document.querySelector("#back");
 
 next.addEventListener("click", (event) => {
   const nextPokemon = innerPokemonData.id + 1;
+  const evolution_items = document.querySelector(".evolution-items")
+  evolution_items.innerHTML = ''
+  mass.length=0;
   RenderPokemonPage({ id: nextPokemon });
 });
 
 back.addEventListener("click", (event) => {
   const nextPokemon = innerPokemonData.id - 1;
+  const evolution_items = document.querySelector(".evolution-items")
+  evolution_items.innerHTML = ''
+  mass.length=0;
   RenderPokemonPage({ id: nextPokemon });
   buttonbackWisibl();
 });
@@ -456,6 +464,7 @@ async function setevoGroup(url) {
   let json = await idPokemon.json();
   gettingNamesPokemonGroup(json.chain);
   loadPokemonData(mass);
+  gettingNamesPokemonGroup
 }
 const mass = [];
 //функция которя получает имена покемонов из группы эволюции
@@ -468,25 +477,64 @@ function gettingNamesPokemonGroup(evol) {
     });
   }
 }
+/// функция с которой списываю аллсетлед
+async function getPokemons() {
+  const response = await fetch(
+    `${BASE_URL}pokemon/?limit=${LIMIT_POKEMNON}&offset=${offsetPok}`
+  );
+  const data = await response.json(); // парсим промис
+  const parametersPokemons = data.results; // задаю ссылку для мапа
+  // получаю все урлы и передаю в новую функцию
+
+  await Promise.allSettled(
+    parametersPokemons.map(async (parametrPokemon) => {
+      const pokemonData = await getPokemon(parametrPokemon.url);
+      base.push(pokemonData);
+    })
+  );
+
+  base.sort((a, b) => {
+    return a.id - b.id;
+  });
+
+  outputArray(base); //отрисовка вызовется только тогда, когда выполнется allSettled
+}
+
+
 
 //фукнция которя принимает имя покемона и загружает о нем все данные
 async function loadPokemonData(urlPok) {
-  for (const item of urlPok) {
-    let urlPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${item}/`);
-    let data = await urlPokemon.json();
-    const parametersPokemons = data;
-
-    //   await Promise.allSettled(parametersPokemons.map(async (parametrPokemon) => {
-    //   const pokemonData = await getPokemon(parametrPokemon.url);
-    //   console.log(pokemonData)
-    //  }))
-    const namePokemon = parametersPokemons.name;
-    const idPokemon = parametersPokemons.id;
-    const img =
-      parametersPokemons.sprites.other["official-artwork"].front_default;
-    creatEvol(namePokemon, idPokemon, img, parametersPokemons.types);
+    Promise.allSettled(urlPok.map(async (parametrPokemon) => {
+       let urlPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${parametrPokemon}/`);
+       let data = await urlPokemon.json();
+       console.log(data.name)
+       const namePokemon = data.name;
+       const idPokemon = data.id;
+       const img = data.sprites.other["official-artwork"].front_default;
+       creatEvol(namePokemon, idPokemon, img, data.types);
+     }))
   }
-}
+
+
+// //фукнция которя принимает имя покемона и загружает о нем все данные
+// async function loadPokemonData(urlPok) {
+//   for (const item of urlPok) {
+//     let urlPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${item}/`);
+//     let data = await urlPokemon.json();
+//     const parametersPokemons = data;
+
+//     //   await Promise.allSettled(parametersPokemons.map(async (parametrPokemon) => {
+//     //   const pokemonData = await getPokemon(parametrPokemon.url);
+//     //   console.log(pokemonData)
+//     //  }))
+//     const namePokemon = parametersPokemons.name;
+//     const idPokemon = parametersPokemons.id;
+//     const img =
+//       parametersPokemons.sprites.other["official-artwork"].front_default;
+//     creatEvol(namePokemon, idPokemon, img, parametersPokemons.types);
+//   }
+// }
+
 //функция создает и отрисовывет блок эволюции
 function creatEvol(namePokemon, idPokemon, imgpokemon, types) {
   const evolution_items = document.querySelector(".evolution-items");
@@ -497,6 +545,8 @@ function creatEvol(namePokemon, idPokemon, imgpokemon, types) {
 
   const a = document.createElement("a");
   evolution_item.appendChild(a);
+  a.href = `pokemons/${idPokemon}`;
+  a.onclick = linksHandler;
 
   const img = document.createElement("img");
   img.className = "imgEvolution";
@@ -517,6 +567,7 @@ function creatEvol(namePokemon, idPokemon, imgpokemon, types) {
   typePok.className = "typePok";
   evolution_item.appendChild(typePok);
 
+
   types.forEach((type) => {
     const pokemonType = document.createElement("li");
     pokemonType.className = "pokemonType";
@@ -524,5 +575,8 @@ function creatEvol(namePokemon, idPokemon, imgpokemon, types) {
 
     pokemonType.textContent = type.type.name;
     typePok.appendChild(pokemonType);
+    
   });
 }
+
+
